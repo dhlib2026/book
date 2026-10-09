@@ -14,16 +14,13 @@
 
 .hero{position:relative;overflow:hidden;padding:36px 32px}.hero h2{font-size:29px;line-height:1.5;position:relative}.hero p,.hero>.row{position:relative}.hero>.row{max-width:780px}.eyebrow{display:block;font-size:12px;letter-spacing:2px;color:#46739d;font-weight:bold;margin-bottom:12px}.book-art{position:absolute;right:45px;top:35px;width:190px;height:125px;transform:rotate(-8deg);opacity:.85}.book-art i{position:absolute;bottom:0;width:35px;border-radius:9px 9px 3px 3px;border-bottom:9px solid #87a2b4;box-shadow:inset 6px 0 #ffffff45}.book-art i:nth-child(1){left:0;height:110px;background:#88baff}.book-art i:nth-child(2){left:43px;height:125px;background:#ffd66c}.book-art i:nth-child(3){left:86px;height:100px;background:#a6d3bd}.book-art i:nth-child(4){left:129px;height:116px;background:#f2b6a8}.book-art span{position:absolute;bottom:-28px;left:43px;font-size:12px;letter-spacing:4px;color:#6686a5}.group{transition:transform .15s,background .15s;box-shadow:0 4px 0 #dbe6f2}.group:hover{transform:translateY(-3px)}.group:nth-child(2){background:#fff4ce}.group:nth-child(3){background:#e7f4ed}.group:nth-child(4){background:#fff0ea}.group.active{background:#dceaff}.book{box-shadow:0 6px 18px #4670960a;transition:box-shadow .2s}.book:hover{box-shadow:0 9px 26px #46709617}.cover{box-shadow:3px 4px 8px #24365c15}.api-card{background:#f7fbff;border:1px solid var(--line);border-radius:20px;padding:22px}.api-card button{padding:10px 13px}.summary{background:#fff4ce}.card h2{letter-spacing:-.5px}button{transition:filter .15s,transform .15s}button:active{transform:translateY(1px)}
 @media(max-width:900px){.book-art{opacity:.22;right:20px}.hero h2{font-size:26px}}@media(max-width:720px){.hero{padding:26px 22px}.hero h2{font-size:24px}.book-art{right:0;top:25px;transform:rotate(-8deg) scale(.8)}.eyebrow{font-size:10px}}
+
+.home-link{color:inherit;text-decoration:none;cursor:pointer;display:inline-block}.home-link:focus-visible{outline:3px solid #86b5ff;outline-offset:6px;border-radius:8px}
 </style>
 <script src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js" defer></script>
 </head>
 <body>
-<header><div class="wrap"><h1>
-  <a href="" onclick="location.reload(); return false;"
-     style="color:inherit; text-decoration:none; cursor:pointer;">
-    📚 <span id="schoolName">학교도서관</span>
-  </a>
-</h1><div class="row"><span id="who" class="muted"></span><button class="light" id="leave">사용자 변경</button><button class="light" id="adminLogin">관리자</button></div></div></header>
+<header><div class="wrap"><h1><a id="homeLink" class="home-link" href="" aria-label="도서관 첫 화면 새로고침">📚 <span id="schoolName">대현고등학교 도서관</span></a></h1><div class="row"><span id="who" class="muted"></span><button class="light" id="leave">사용자 변경</button><button class="light" id="adminLogin">관리자</button></div></div></header>
 <main class="wrap">
 <section class="card hero"><div class="book-art" aria-hidden="true"><i></i><i></i><i></i><i></i><span>BOOKS</span></div><span class="eyebrow">OUR LIBRARY · BOOK WISH</span><h2>한 권의 신청이,<br>우리 도서관의 다음 책이 됩니다.</h2><p>읽고 싶은 책을 찾아, 도서관에 알려주세요.</p><div class="row"><select id="round" class="grow" aria-label="수서 차수"></select><span id="period" class="badge hold"></span></div></section>
 <section id="entry" class="card"><h2>어떤 분이 신청하시나요?</h2><div class="groups" id="groups"></div><form id="entryForm"><div id="identityFields" class="two"></div><p class="muted">입력한 정보로 신청 내역을 다시 확인할 수 있습니다. 본인 정보를 정확하게 입력해 주세요.</p><button type="submit">시작하기 →</button></form></section>
@@ -33,7 +30,7 @@
 <script>
 'use strict';
 // ====================== 입력할 공개 설정 ======================
-const SERVER_URL = 'https://script.google.com/macros/s/AKfycbyl6_mu_YADArit2PlN_fk_qFiAG8J2qIL1c7Y8H57eU8QqxHY-euGHfEvvpxvQzcWw/exec';
+const SERVER_URL = 'hhttps://script.google.com/macros/s/AKfycbyl6_mu_YADArit2PlN_fk_qFiAG8J2qIL1c7Y8H57eU8QqxHY-euGHfEvvpxvQzcWw/exec';
 // =============================================================
 const $ = id => document.getElementById(id);
 const S = {
@@ -224,38 +221,15 @@ function entry() {
   ];
   $('groups').innerHTML = gs.map(([g, i]) => `<button type="button" class="group ${g===S.group?'active':''}" data-group="${g}">${i}<br>${g}</button>`).join('');
   const student = ['학생', '학부모'].includes(S.group);
-  const nameField = `
-  <div>
-    <label for="name">${S.group === '학부모' ? '학생 성명' : '성명'}</label>
-    <input id="name" maxlength="40" autocomplete="off" required>
-  </div>
-`;
+  const nameField = (label) => `<div><label for="name">${label}</label><input id="name" maxlength="40" autocomplete="off" required></div>`;
+  if (student) {
+    $('identityFields').innerHTML = `<div><label for="number">${S.group === '학부모' ? '학생 학번' : '학번'}</label><input id="number" inputmode="numeric" pattern="[0-9]{4,8}" maxlength="8" required></div>` + nameField(S.group === '학부모' ? '학생 이름' : '이름');
+  } else if (S.group === '교원') {
+    $('identityFields').innerHTML = `<div><label for="subject">과목</label><input id="subject" maxlength="40" autocomplete="off" required></div>` + nameField('성명');
+  } else if (S.group === '직원') {
+    $('identityFields').innerHTML = `<div><label for="staffDepartment">소속</label><input id="staffDepartment" value="행정실" readonly></div>` + nameField('성명');
+  }
 
-if (student) {
-  $('identityFields').innerHTML = `
-    <div>
-      <label for="number">${S.group === '학부모' ? '학생 학번' : '학번'}</label>
-      <input id="number" inputmode="numeric"
-             pattern="[0-9]{4,8}" maxlength="8" required>
-    </div>
-    ${nameField}
-  `;
-} else if (S.group === '교원') {
-  $('identityFields').innerHTML = `
-    <div>
-      <label for="subject">과목</label>
-      <input id="subject" maxlength="40" required>
-    </div>
-    ${nameField}
-  `;
-} else if (S.group === '직원') {
-  $('identityFields').innerHTML = `
-    <div>
-      <label for="staffDepartment">소속</label>
-      <input id="staffDepartment" value="행정실" readonly>
-    </div>
-    ${nameField}
-  `;
 }
 $('groups').onclick = e => {
   const b = e.target.closest('[data-group]');
@@ -951,6 +925,10 @@ function bindApiSettings(keys) {
   });
 }
 
+$('homeLink').addEventListener('click', (event) => {
+  event.preventDefault();
+  window.location.reload();
+});
 entry();
 run(init);
 </script>
