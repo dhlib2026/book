@@ -1,0 +1,922 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>학교도서관 도서 신청</title>
+<!-- GitHub에 index.html로 저장. 아래 SERVER_URL 한 곳만 변경.
+     API 키는 관리자 → 설정에서 입력하고 연결 확인 후 저장.
+     Code.gs의 FRONTEND_ORIGIN=https://사용자.github.io 로 맞춘 후 setup 실행.
+     Script 웹앱 배포: 나로 실행 / 모든 사용자. 새 배포 시 URL 확인.
+     외부 라이브러리: SheetJS 0.20.3(XLSX 작성), 네트워크 실패 시 TSV(.txt) 대체.
+     실배포 iframe 통신은 학교 브라우저·Google 정책에 따라 검증 필요. -->
+<style>
+:root{--blue:#2563eb;--ink:#172b4d;--muted:#61718a;--line:#dbe5f3;--bg:#fffaf0;--yellow:#fff1b8}*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font-family:Arial,'Malgun Gothic',sans-serif;font-size:16px}header{background:white;border-bottom:1px solid var(--line)}.wrap{max-width:1200px;margin:auto;padding:24px}header .wrap{display:flex;align-items:center;justify-content:space-between;gap:16px}h1{font-size:24px;margin:0}h2{font-size:23px;margin:0 0 16px}h3{margin:0 0 10px}p{line-height:1.65}button,input,select,textarea{font:inherit}button{border:0;border-radius:14px;background:var(--blue);color:white;padding:12px 19px;cursor:pointer;font-weight:700;min-height:45px}button:hover{filter:brightness(.95)}button:disabled{opacity:.5;cursor:default}.light{background:#e9f1ff;color:var(--blue)}.yellow{background:var(--yellow);color:#73520a}.danger{background:#ffe6e6;color:#a72a2a}.card{background:white;border:1px solid var(--line);border-radius:23px;padding:25px;margin-bottom:20px;box-shadow:0 5px 20px #1c468008}.hero{background:linear-gradient(115deg,#e8f3ff 0%,#f0f8ff 60%,#fff0ba 100%);border:0;padding:30px}.muted{color:var(--muted);font-size:14px}.row{display:flex;align-items:center;gap:12px;flex-wrap:wrap}.grow{flex:1;min-width:170px}label{display:block;font-weight:600;margin:10px 0 7px}input,select,textarea{width:100%;padding:12px 14px;border:1px solid #cbd8eb;border-radius:13px;background:white;color:var(--ink)}input:focus,select:focus,textarea:focus{outline:3px solid #d8e7ff;border-color:var(--blue)}textarea{min-height:100px;resize:vertical}input[type=checkbox]{width:20px;height:20px;accent-color:var(--blue)}.groups{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin:20px 0}.group{background:#edf4ff;color:var(--ink);padding:22px 12px;font-size:19px;border:2px solid transparent}.group.active{border-color:var(--blue);background:#dceaff;color:var(--blue)}nav{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 22px}nav button{background:white;color:var(--muted);border:1px solid var(--line)}nav button.active{background:var(--blue);color:white}.badge{display:inline-block;padding:5px 9px;border-radius:9px;background:#e7f0ff;font-size:13px;white-space:nowrap}.badge.hold{background:#fff0c4;color:#74570e}.badge.no{background:#ffe8e8;color:#a32a2a}.books{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}.book{display:flex;gap:18px;border:1px solid var(--line);border-radius:18px;padding:20px;background:white}.cover{width:83px;height:120px;object-fit:contain;background:#f1f5fb;border-radius:6px}.bookmain{min-width:0;flex:1}.bookmain h3{font-size:18px;line-height:1.4}.bookmain p{margin:8px 0;font-size:14px}.bookmain a{color:var(--blue)}.tablewrap{overflow:auto}table{width:100%;border-collapse:collapse;min-width:880px}th,td{padding:12px 10px;text-align:left;border-bottom:1px solid var(--line);vertical-align:top;font-size:14px}th{background:#edf4ff;white-space:nowrap}td.title{min-width:200px}td small{display:block;color:var(--muted);margin-top:7px;line-height:1.5}.toolbar{margin:12px 0}.toolbar select,.toolbar input{width:auto;max-width:260px}.empty{text-align:center;color:var(--muted);padding:35px}.hidden{display:none!important}dialog{border:0;border-radius:23px;padding:28px;width:min(550px,94vw);color:var(--ink);max-height:90vh;overflow:auto}dialog::backdrop{background:#172b4d66}.actions{display:flex;gap:10px;justify-content:flex-end;margin-top:20px}#toast{position:fixed;bottom:25px;left:50%;transform:translateX(-50%);max-width:90vw;z-index:30;background:var(--ink);color:white;padding:14px 22px;border-radius:14px;white-space:pre-line}#busy{position:fixed;inset:0;background:#ffffffa8;z-index:50;display:flex;justify-content:center;align-items:center;backdrop-filter:blur(2px)}#busy div{background:white;padding:25px;border-radius:20px;box-shadow:0 10px 30px #174e7e22}footer{text-align:center;color:var(--muted);padding:20px;font-size:13px}.summary{background:#eef5ff;border-radius:16px;padding:18px;margin:15px 0;font-weight:700}.consent{background:#fff7d8;padding:14px;border-radius:12px;display:flex;gap:10px;align-items:flex-start;line-height:1.6}.consent input{flex-shrink:0;margin-top:3px}.two{display:grid;grid-template-columns:1fr 1fr;gap:14px}@media(max-width:720px){.wrap{padding:16px}.card{padding:20px}.groups{grid-template-columns:repeat(2,1fr)}.books,.two{grid-template-columns:1fr}h1{font-size:19px}.book{padding:15px;gap:12px}.hero{padding:24px}.cover{width:65px;height:96px}header .wrap{align-items:flex-start}}
+
+.hero{position:relative;overflow:hidden;padding:36px 32px}.hero h2{font-size:29px;line-height:1.5;position:relative}.hero p,.hero>.row{position:relative}.hero>.row{max-width:780px}.eyebrow{display:block;font-size:12px;letter-spacing:2px;color:#46739d;font-weight:bold;margin-bottom:12px}.book-art{position:absolute;right:45px;top:35px;width:190px;height:125px;transform:rotate(-8deg);opacity:.85}.book-art i{position:absolute;bottom:0;width:35px;border-radius:9px 9px 3px 3px;border-bottom:9px solid #87a2b4;box-shadow:inset 6px 0 #ffffff45}.book-art i:nth-child(1){left:0;height:110px;background:#88baff}.book-art i:nth-child(2){left:43px;height:125px;background:#ffd66c}.book-art i:nth-child(3){left:86px;height:100px;background:#a6d3bd}.book-art i:nth-child(4){left:129px;height:116px;background:#f2b6a8}.book-art span{position:absolute;bottom:-28px;left:43px;font-size:12px;letter-spacing:4px;color:#6686a5}.group{transition:transform .15s,background .15s;box-shadow:0 4px 0 #dbe6f2}.group:hover{transform:translateY(-3px)}.group:nth-child(2){background:#fff4ce}.group:nth-child(3){background:#e7f4ed}.group:nth-child(4){background:#fff0ea}.group.active{background:#dceaff}.book{box-shadow:0 6px 18px #4670960a;transition:box-shadow .2s}.book:hover{box-shadow:0 9px 26px #46709617}.cover{box-shadow:3px 4px 8px #24365c15}.api-card{background:#f7fbff;border:1px solid var(--line);border-radius:20px;padding:22px}.api-card button{padding:10px 13px}.summary{background:#fff4ce}.card h2{letter-spacing:-.5px}button{transition:filter .15s,transform .15s}button:active{transform:translateY(1px)}
+@media(max-width:900px){.book-art{opacity:.22;right:20px}.hero h2{font-size:26px}}@media(max-width:720px){.hero{padding:26px 22px}.hero h2{font-size:24px}.book-art{right:0;top:25px;transform:rotate(-8deg) scale(.8)}.eyebrow{font-size:10px}}
+</style>
+<script src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js" defer></script>
+</head>
+<body>
+<header><div class="wrap"><h1>📚 <span id="schoolName">학교도서관</span></h1><div class="row"><span id="who" class="muted"></span><button class="light" id="leave">사용자 변경</button><button class="light" id="adminLogin">관리자</button></div></div></header>
+<main class="wrap">
+<section class="card hero"><div class="book-art" aria-hidden="true"><i></i><i></i><i></i><i></i><span>BOOKS</span></div><span class="eyebrow">OUR LIBRARY · BOOK WISH</span><h2>한 권의 신청이,<br>우리 도서관의 다음 책이 됩니다.</h2><p>읽고 싶은 책을 찾아, 도서관에 알려주세요.</p><div class="row"><select id="round" class="grow" aria-label="수서 차수"></select><span id="period" class="badge hold"></span></div></section>
+<section id="entry" class="card"><h2>어떤 분이 신청하시나요?</h2><div class="groups" id="groups"></div><form id="entryForm"><div id="identityFields" class="two"></div><p class="muted">입력한 정보로 신청 내역을 다시 확인할 수 있습니다. 본인 정보를 정확하게 입력해 주세요.</p><button type="submit">시작하기 →</button></form></section>
+<section id="app" class="hidden"><nav id="nav"></nav><div id="content"></div></section>
+</main><footer>학교도서관 도서 신청·선정</footer>
+<dialog id="modal"><div id="modalContent"></div></dialog><div id="toast" class="hidden" role="status"></div><div id="busy" class="hidden" role="status"><div>자료를 확인하고 있습니다…</div></div>
+<script>
+'use strict';
+// ====================== 입력할 공개 설정 ======================
+const SERVER_URL = 'https://script.google.com/macros/s/AKfycbyl6_mu_YADArit2PlN_fk_qFiAG8J2qIL1c7Y8H57eU8QqxHY-euGHfEvvpxvQzcWw/exec';
+// =============================================================
+const $ = id => document.getElementById(id);
+const S = {
+  services: {
+    yes: false,
+    nl: false
+  },
+  profile: {
+    level: '고등학교',
+    gender: '남학생 중심'
+  },
+  searchSeq: 0,
+  categories: [],
+  group: '학생',
+  user: null,
+  token: '',
+  tab: '신청',
+  rounds: [],
+  school: null,
+  books: [],
+  list: [],
+  result: [],
+  selected: new Set(),
+  page: 1,
+  size: 20,
+  filter: '전체',
+  groupFilter: '전체',
+  sort: 'new',
+  q: '',
+  searchPage: 1,
+  searchSource: '예스24',
+  searchCategory: '',
+  total: 0,
+  submissionId: null
+};
+const esc = v => String(v ?? '').replace(/[&<>"']/g, c => ({
+  '&': '&amp;',
+  '<': '&lt;',
+  '>': '&gt;',
+  '"': '&quot;',
+  "'": '&#39;'
+} [c]));
+const money = v => Number(v || 0).toLocaleString('ko-KR') + '원';
+const tag = (v, cls = '') => `<span class="badge ${cls}">${esc(v)}</span>`;
+const time = v => v ? new Date(v).toLocaleString('ko-KR', {
+  timeZone: 'Asia/Seoul'
+}) : '';
+let busyCount = 0,
+  toastTimer;
+const pending = new Map();
+
+function toast(s) {
+  $('toast').textContent = s;
+  $('toast').classList.remove('hidden');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => $('toast').classList.add('hidden'), 7000);
+}
+async function run(fn) {
+  try {
+    busyCount++;
+    $('busy').classList.remove('hidden');
+    return await fn();
+  } catch (e) {
+    toast(e.message || '처리 실패');
+    return null;
+  } finally {
+    if (--busyCount === 0) $('busy').classList.add('hidden');
+  }
+}
+
+function uuid() {
+  return crypto.randomUUID();
+}
+
+function api(action, p = {}) {
+  if (SERVER_URL.includes('여기에_')) return Promise.reject(Error('index 상단 SERVER_URL에 Apps Script 웹앱 주소를 입력하세요.'));
+  return new Promise((resolve, reject) => {
+    const id = uuid(),
+      frame = document.createElement('iframe'),
+      form = document.createElement('form');
+    frame.name = 'request_' + id;
+    frame.hidden = true;
+    form.method = 'POST';
+    form.action = SERVER_URL;
+    form.target = frame.name;
+    form.hidden = true;
+    const input = document.createElement('input');
+    input.name = 'payload';
+    input.value = JSON.stringify({
+      ...p,
+      action,
+      id,
+      origin: location.origin,
+      token: S.token,
+      round: $('round').value
+    });
+    form.append(input);
+    document.body.append(frame, form);
+    const timer = setTimeout(() => {
+      cleanup();
+      reject(Error('응답 시간이 초과되었습니다. 신청은 저장됐을 수 있으니 내 신청 확인에서 확인하세요. 재시도할 때는 같은 제출을 유지합니다.'));
+    }, 180000);
+
+    function cleanup() {
+      clearTimeout(timer);
+      pending.delete(id);
+      form.remove();
+      frame.remove();
+    }
+    pending.set(id, {
+      resolve: v => {
+        cleanup();
+        resolve(v)
+      },
+      reject: e => {
+        cleanup();
+        reject(e)
+      }
+    });
+    form.submit();
+  });
+}
+window.addEventListener('message', e => {
+  let host;
+  try {
+    host = new URL(e.origin).hostname;
+  } catch {
+    return;
+  }
+  if (!(/(^|[.-])script\.googleusercontent\.com$/.test(host) || host === 'script.google.com')) return;
+  const d = e.data;
+  if (!d || d.channel !== 'library-app' || !pending.has(d.id)) return;
+  const p = pending.get(d.id);
+  d.ok ? p.resolve(d.data) : p.reject(Error(d.error));
+});
+
+function currentRound() {
+  return S.rounds.find(x => x.id === $('round').value);
+}
+
+function isOpen() {
+  const r = currentRound();
+  if (!r) return false;
+  const day = new Intl.DateTimeFormat('sv-SE', {
+    timeZone: 'Asia/Seoul'
+  }).format(new Date());
+  return r.enabled === 'true' && day >= r.start && day <= r.end;
+}
+
+function setRounds(rs) {
+  const prev = $('round').value;
+  S.rounds = rs;
+  $('round').innerHTML = rs.map(r => `<option value="${esc(r.id)}">${esc(r.year)}학년도 ${esc(r.number)}차</option>`).join('');
+  if (rs.some(x => x.id === prev)) $('round').value = prev;
+  else {
+    const active = rs.find(r => r.enabled === 'true' && new Intl.DateTimeFormat('sv-SE', {
+      timeZone: 'Asia/Seoul'
+    }).format(new Date()) >= r.start && new Intl.DateTimeFormat('sv-SE', {
+      timeZone: 'Asia/Seoul'
+    }).format(new Date()) <= r.end);
+    if (active) $('round').value = active.id;
+  }
+  period();
+}
+
+function period() {
+  const r = currentRound();
+  $('period').textContent = r ? `${r.start} ~ ${r.end} · ${isOpen()?'접수 중':'접수 전 또는 마감'}` : '관리자가 접수 차수를 설정해야 합니다.';
+}
+async function init() {
+  const d = await api('init');
+  S.school = d.school;
+  S.services = d.services || {
+    yes: false,
+    nl: false
+  };
+  S.profile = d.profile || S.profile;
+  $('schoolName').textContent = d.school.name + ' 도서관';
+  setRounds(d.rounds);
+}
+
+function entry() {
+  const gs = [
+    ['학생', '🎒'],
+    ['교원', '📖'],
+    ['직원', '🏫'],
+    ['학부모', '🌱']
+  ];
+  $('groups').innerHTML = gs.map(([g, i]) => `<button type="button" class="group ${g===S.group?'active':''}" data-group="${g}">${i}<br>${g}</button>`).join('');
+  const student = ['학생', '학부모'].includes(S.group);
+  $('identityFields').innerHTML = (student ? '<div><label for="number">' + (S.group === '학부모' ? '학생 학번' : '학번') + '</label><input id="number" inputmode="numeric" pattern="[0-9]{4,8}" maxlength="8" required></div>' : '') + '<div><label for="name">' + (S.group === '학부모' ? '학생 이름' : '이름') + '</label><input id="name" maxlength="40" autocomplete="off" required></div>' + (S.group === '교원' ? '<div><label for="subject">과목</label><input id="subject" maxlength="40" required></div>' : S.group === '직원' ? '<div><label>소속</label><input value="행정실" readonly></div>' : '');
+}
+$('groups').onclick = e => {
+  const b = e.target.closest('[data-group]');
+  if (b) {
+    S.group = b.dataset.group;
+    entry();
+  }
+};
+$('entryForm').onsubmit = e => {
+  e.preventDefault();
+  S.user = {
+    group: S.group,
+    name: $('name').value.trim(),
+    number: $('number')?.value.trim() || '',
+    subject: $('subject')?.value.trim() || ''
+  };
+  $('entry').classList.add('hidden');
+  $('app').classList.remove('hidden');
+  $('who').textContent = S.group + ' ' + S.user.name;
+  S.tab = '신청';
+  render();
+};
+$('leave').onclick = () => {
+  S.searchSeq++;
+  S.user = null;
+  S.token = '';
+  S.selected.clear();
+  S.list = [];
+  S.result = [];
+  $('entry').classList.remove('hidden');
+  $('app').classList.add('hidden');
+  $('who').textContent = '';
+  entry();
+};
+$('round').onchange = () => {
+  S.selected.clear();
+  S.page = 1;
+  S.books = [];
+  period();
+  if (S.user || S.token) render();
+};
+$('adminLogin').onclick = () => {
+  if (S.token) {
+    S.tab = '선정';
+    render();
+    return;
+  }
+  modal('<h2>관리자 로그인</h2><form id="loginForm"><label>아이디</label><input id="adminId" autocomplete="username" required><label>비밀번호</label><input id="adminPw" type="password" autocomplete="current-password" required><div class="actions"><button type="button" class="light" data-close>취소</button><button>로그인</button></div></form>');
+  $('loginForm').onsubmit = e => {
+    e.preventDefault();
+    run(async () => {
+      const d = await api('login', {
+        user: $('adminId').value,
+        password: $('adminPw').value
+      });
+      S.token = d.token;
+      S.tab = '선정';
+      $('modal').close();
+      $('entry').classList.add('hidden');
+      $('app').classList.remove('hidden');
+      $('who').textContent = '관리자';
+      await render();
+    });
+  };
+};
+
+function modal(html) {
+  $('modalContent').innerHTML = html;
+  if (!$('modal').open) $('modal').showModal();
+  $('modalContent').querySelectorAll('[data-close]').forEach(b => b.onclick = () => $('modal').close());
+}
+
+function render() {
+  S.searchSeq++;
+  const tabs = S.token ? ['선정', '수서', '결과', '설정', '로그아웃'] : ['신청', '내 신청'];
+  $('nav').innerHTML = tabs.map(t => `<button class="${S.tab===t?'active':''}" data-tab="${t}">${t==='수서'?'수서도우미':t}</button>`).join('');
+  if (S.tab === '신청' || S.tab === '수서') return searchScreen();
+  if (S.tab === '내 신청') return run(mine);
+  if (S.tab === '선정') return run(loadList);
+  if (S.tab === '결과') return run(loadResult);
+  if (S.tab === '설정') return run(settings);
+}
+$('nav').onclick = e => {
+  const b = e.target.closest('[data-tab]');
+  if (!b) return;
+  if (b.dataset.tab === '로그아웃') {
+    run(async () => {
+      await api('logout');
+      $('leave').click();
+    });
+    return;
+  }
+  S.tab = b.dataset.tab;
+  S.selected.clear();
+  render();
+};
+
+function searchScreen() {
+  const admin = S.tab === '수서';
+  S.books = [];
+  S.searchPage = 1;
+  $('content').innerHTML = `<section class="card"><h2>${admin?'수서 후보 찾기':'도서 신청'}</h2>${!admin&&!isOpen()?'<p class="consent">현재 접수 전이거나 신청이 마감되었습니다. 내 신청 내역은 확인할 수 있습니다.</p>':''}<form id="searchForm">${admin?'<div class="two"><div><label>제공처</label><select id="source"><option>예스24</option><option value="국립중앙도서관">국립중앙도서관</option></select></div><div><label>분야</label><select id="category"><option value="">전체</option></select></div></div><div class="row toolbar"><select id="recType" aria-label="추천 종류"><option value="best">베스트셀러</option><option value="new">신간</option></select><button type="button" class="yellow" id="recommend">추천 목록</button></div><div id="recommendFilters" class="two"><div><label>연령 조건</label><select id="recAge"><option value="10">10대</option><option value="255">전체 연령</option></select></div><div><label>성별 조건</label><select id="recSex"><option value="M">남성</option><option value="A">전체</option><option value="F">여성</option></select></div></div><p id="filterHelp" class="muted">베스트셀러의 연령·성별 조건입니다. 신간에는 적용되지 않습니다.</p><div class="row toolbar"><button type="button" class="light" id="teenPreset">청소년 분야</button><button type="button" class="light" id="profilePreset">학교 기본조건</button><button type="button" class="light" id="allPreset">전체 조건</button></div><div id="nlDates" class="two hidden"><div><label>추천 시작일</label><input id="nlStart" type="date"></div><div><label>추천 종료일</label><input id="nlEnd" type="date"></div></div>':''}<label for="q">도서명 · 저자 · ISBN</label><div class="row"><input class="grow" id="q" maxlength="150" placeholder="읽고 싶은 책을 검색하세요"><button>검색</button></div></form><p class="muted">${admin?'담은 도서는 후보로 저장됩니다. 선정 메뉴에서 검토 후 선정하세요.':'신청 후 수정·취소할 수 없습니다. 소장 확인 실패 시 확인이 필요한 신청으로 접수됩니다.'}</p></section><p id="searchContext" class="muted"></p><p id="holdingProgress" class="muted" aria-live="polite"></p><div id="bookResults"></div><div id="searchPager" class="row"></div>`;
+  $('searchForm').onsubmit = e => {
+    e.preventDefault();
+    S.searchPage = 1;
+    S.searchMode = 'search';
+    run(doSearch);
+  };
+  if (admin) {
+    $('source').querySelector('option[value="국립중앙도서관"]').disabled = !S.services.nl;
+    if (!S.services.nl) $('source').querySelector('option[value="국립중앙도서관"]').textContent = '국립중앙도서관 · 연결 준비 중';
+    $('recSex').value = S.profile.gender === '남학생 중심' ? 'M' : S.profile.gender === '여학생 중심' ? 'F' : 'A';
+    $('recAge').value = S.profile.level === '초등학교' ? '255' : '10';
+    $('recType').onchange = syncRecommendationFilters;
+    $('profilePreset').onclick = () => {
+      $('recSex').value = S.profile.gender === '남학생 중심' ? 'M' : S.profile.gender === '여학생 중심' ? 'F' : 'A';
+      $('recAge').value = S.profile.level === '초등학교' ? '255' : '10';
+      toast('학교 기본조건을 적용했습니다. 최종 적합성은 검토해 주세요.');
+    };
+    $('allPreset').onclick = () => {
+      $('recSex').value = 'A';
+      $('recAge').value = '255';
+      $('category').value = S.categories.find(c => c.id === '001')?.id || '';
+    };
+    $('teenPreset').onclick = () => {
+      const cat = S.categories.find(c => /청소년/.test(c.name) && c.name.split('>').length <= 3) || S.categories.find(c => /청소년/.test(c.name));
+      if (!cat) {
+        toast('현재 제공처에 청소년 분야가 없습니다. 분야를 직접 선택해 주세요.');
+        return;
+      }
+      $('category').value = cat.id;
+      $('recAge').value = '255';
+      $('recSex').value = 'A';
+    };
+    $('source').onchange = () => run(loadCategories);
+    $('recommend').onclick = () => {
+      S.searchPage = 1;
+      S.searchMode = 'recommend';
+      run(doSearch);
+    };
+    if (S.services.yes) run(loadCategories);
+    else $('searchContext').textContent = '관리자 설정에서 예스24 API를 연결해 주세요.';
+  } else if (!S.services.yes) {
+    $('searchContext').textContent = '도서 검색 연결을 준비 중입니다. 관리자에게 문의해 주세요.';
+  }
+}
+
+function syncRecommendationFilters() {
+  const national = $('source').value === '국립중앙도서관',
+    newBooks = $('recType').value === 'new';
+  $('recommendFilters').classList.toggle('hidden', national);
+  $('recType').disabled = national;
+  $('recAge').disabled = newBooks || national;
+  $('recSex').disabled = newBooks || national;
+  $('filterHelp').textContent = national ? '사서추천은 기간과 분야로 조회합니다. 학교급·성별 조건은 제공되지 않습니다.' : newBooks ? '신간은 분야로 조회합니다. 연령·성별 조건은 제공되지 않습니다.' : '베스트셀러의 연령·성별 조건입니다. 고등학생 적합성을 보증하지 않습니다.';
+  $('teenPreset').disabled = national;
+  $('profilePreset').disabled = national || newBooks;
+  $('allPreset').disabled = national;
+}
+async function loadCategories() {
+  const source = $('source').value;
+  $('nlDates').classList.toggle('hidden', source !== '국립중앙도서관');
+  syncRecommendationFilters();
+  const cats = await api('categories', {
+    source
+  });
+  S.categories = cats;
+  $('category').innerHTML = cats.map(c => `<option value="${esc(c.id)}">${esc(c.name)}</option>`).join('');
+}
+async function doSearch() {
+  if (!currentRound()) throw Error('먼저 수서 차수를 설정하세요.');
+  const admin = S.tab === '수서',
+    source = admin ? $('source').value : '예스24';
+  const seq = ++S.searchSeq,
+    roundId = $('round').value;
+  if (source === '국립중앙도서관' && S.searchMode !== 'recommend') throw Error('국립중앙도서관은 추천 목록 버튼을 이용하세요. 직접 검색은 예스24에서 가능합니다.');
+  const d = await api(S.searchMode === 'recommend' ? 'recommend' : 'search', {
+    admin,
+    source,
+    q: $('q').value,
+    category: admin ? $('category').value : '',
+    type: admin ? $('recType').value : '',
+    sex: admin ? $('recSex').value : 'A',
+    age: admin ? Number($('recAge').value) : 255,
+    page: S.searchPage,
+    startDate: $('nlStart')?.value,
+    endDate: $('nlEnd')?.value
+  });
+  if (seq !== S.searchSeq || $('round').value !== roundId) return;
+  S.books = d.items;
+  S.total = d.total;
+  const national = source === '국립중앙도서관',
+    isNew = admin && $('recType').value === 'new';
+  $('searchContext').textContent = admin && S.searchMode === 'recommend' ? (national ? '국립중앙도서관 사서추천 · 기간·분야 조건' : isNew ? '예스24 신간 · 분야 조건' : `예스24 베스트셀러 · ${$('recAge').value==='10'?'10대':'전체 연령'} · ${{A:'전체 성별',M:'남성',F:'여성'}[$('recSex').value]}`) : '예스24 도서 검색 · 현재 페이지의 모든 유효 ISBN을 확인합니다.';
+  drawBooks();
+  checkSearchHoldings(seq, roundId, admin);
+}
+
+function drawBooks() {
+  const admin = S.tab === '수서';
+  $('bookResults').innerHTML = S.books.length ? '<div class="books">' + S.books.map((b, i) => {
+    const pending = b.holding.state === '확인 중';
+    const blocked = pending || (!admin && (b.blocked || (b.holding.state === '소장' && S.user?.group !== '교원') || !isOpen()));
+    return `<article class="book">${b.cover?`<img class="cover" src="${esc(b.cover)}" alt="도서 표지" loading="lazy" referrerpolicy="no-referrer">`:'<div class="cover"></div>'}<div class="bookmain"><h3>${esc(b.title)}</h3><p>${esc(b.author)}<br>${esc(b.publisher)} · ${money(b.price)}<br>ISBN ${esc(b.id)}</p><p>${tag(b.holding.state,b.holding.state==='소장'?'no':b.holding.state==='확인 불가'?'hold':'')} ${b.blocked?tag('현재 차수 보류','no'):''}</p>${b.link?`<p><a href="${esc(b.link)}" target="_blank" rel="noopener noreferrer">${esc(b.source)} 도서정보 ↗</a></p>`:''}${b.recommendation?'<details><summary>외부 추천 사유</summary><p>'+esc(b.recommendation)+'</p></details>':''}<button data-book="${i}" ${blocked?'disabled':''}>${pending?'소장 확인 중…':admin?'수서 후보 담기':b.blocked?'보류 도서':b.holding.state==='소장'?'수업용 신청':'신청하기'}</button></div></article>`;
+  }).join('') + '</div>' : '<div class="card empty">검색 결과가 없습니다.</div>';
+  $('bookResults').querySelectorAll('[data-book]').forEach(b => b.onclick = () => bookModal(S.books[Number(b.dataset.book)]));
+  $('searchPager').innerHTML = `<button class="light" id="prevSearch" ${S.searchPage===1?'disabled':''}>이전</button><span>${S.searchPage}페이지</span><button class="light" id="nextSearch" ${S.searchPage*20>=S.total?'disabled':''}>다음</button>`;
+  $('prevSearch').onclick = () => {
+    S.searchPage--;
+    run(doSearch);
+  };
+  $('nextSearch').onclick = () => {
+    S.searchPage++;
+    run(doSearch);
+  };
+}
+
+async function checkSearchHoldings(seq, roundId, admin) {
+  const ids = [...new Set(S.books.map(b => b.id))];
+  let done = 0;
+  if (!ids.length) {
+    $('holdingProgress').textContent = '';
+    return;
+  }
+  $('holdingProgress').textContent = `소장 확인 ${done}/${ids.length}종 · 결과를 먼저 보여드리고 있습니다.`;
+  for (let i = 0; i < ids.length; i += 10) {
+    if (seq !== S.searchSeq || $('round').value !== roundId) return;
+    try {
+      const d = await api('holdings', {
+        isbns: ids.slice(i, i + 10),
+        admin
+      });
+      if (seq !== S.searchSeq || $('round').value !== roundId) return;
+      S.books.forEach(b => {
+        const h = d.holdings.find(h => h.isbn === b.id),
+          info = d.books.find(x => x.id === b.id);
+        if (h) b.holding = h;
+        if (info) {
+          b.price = info.price;
+          b.cover = b.cover || info.cover;
+        }
+      });
+    } catch (e) {
+      if (seq !== S.searchSeq || $('round').value !== roundId) return;
+      S.books.filter(b => ids.slice(i, i + 10).includes(b.id)).forEach(b => b.holding = {
+        state: '확인 불가'
+      });
+      toast('일부 소장 확인에 실패했습니다. 신청 시 확인 필요로 접수합니다.');
+    }
+    done += Math.min(10, ids.length - i);
+    drawBooks();
+    $('holdingProgress').textContent = `소장 확인 ${done}/${ids.length}종${done===ids.length?' · 완료':''}`;
+  }
+}
+
+function bookModal(b) {
+  const admin = S.tab === '수서',
+    teacher = S.user?.group === '교원';
+  S.submissionId = uuid();
+  modal(`<h2>${esc(b.title)}</h2><p>${esc(b.author)} · ${esc(b.publisher)}<br>정가 ${money(b.price)} ${tag(b.holding.state)}</p><form id="bookForm">${teacher&&!admin?'<label>신청 구분</label><select id="purpose"><option value="교양">교양 · 1부</option><option value="수업용">수업용 · 최대 30부</option></select><label id="consentBox" class="consent hidden"><input type="checkbox" id="consent">도서관 활용 수업용으로 보고서를 제출해야 합니다.</label>':''}<label>부수</label><input id="qty" type="number" min="1" max="${admin?9999:30}" value="1" ${admin?'':'readonly'}><label>${admin?'선정 검토 메모':'신청 이유'}</label><textarea id="reason" maxlength="2000" ${admin?'':'required'}>${admin?esc(b.recommendation):''}</textarea><p class="muted">${admin?'후보로 담은 뒤 선정 메뉴에서 검토합니다.':'제출 후 수정·취소할 수 없습니다.'}</p><div class="actions"><button type="button" class="light" data-close>취소</button><button>${admin?'후보 담기':'신청 제출'}</button></div></form>`);
+  const sync = () => {
+    const cls = $('purpose').value === '수업용';
+    $('consentBox').classList.toggle('hidden', !cls);
+    $('qty').readOnly = !(cls && $('consent').checked);
+    if ($('qty').readOnly) $('qty').value = 1;
+  };
+  if (teacher && !admin) {
+    $('purpose').onchange = sync;
+    $('consent').onchange = sync;
+    if (b.holding.state === '소장') {
+      $('purpose').value = '수업용';
+      sync();
+    }
+  }
+  $('bookForm').onsubmit = e => {
+    e.preventDefault();
+    const purpose = $('purpose')?.value || '일반',
+      consent = $('consent')?.checked || false;
+    if (teacher && !admin && purpose === '수업용' && !consent) {
+      toast('보고서 제출 안내에 동의해 주세요.');
+      return;
+    }
+    if (!confirm(`${b.title}\n${$('qty').value}부를 ${admin?'후보로 담으시겠습니까?':'신청하시겠습니까? 제출 후 수정할 수 없습니다.'}`)) return;
+    run(async () => {
+      await api(admin ? 'candidate' : 'submit', {
+        ...S.user,
+        isbn: b.id,
+        qty: Number($('qty').value),
+        purpose,
+        consent,
+        reason: $('reason').value,
+        requestId: S.submissionId
+      });
+      $('modal').close();
+      toast(admin ? '수서 후보에 담았습니다.' : '신청이 완료되었습니다.');
+    });
+  };
+}
+async function mine() {
+  if (!currentRound()) {
+    $('content').innerHTML = '<div class="card empty">설정된 차수가 없습니다.</div>';
+    return;
+  }
+  const list = await api('mine', S.user);
+  $('content').innerHTML = '<section class="card"><h2>내 신청 확인</h2>' + (!list.length ? '<p class="empty">신청 내역이 없습니다.</p>' : list.map(x => `<article class="card"><div class="row"><h3 class="grow">${esc(x.title)}</h3>${tag(x.status,x.status==='보류'?'hold':'')}</div><p>${esc(x.author)} · ${x.qty}부</p><p>${esc(x.reason)}</p>${x.notice?'<p class="consent">처리 안내: '+esc(x.notice)+'</p>':''}<p class="muted">${time(x.created)}</p></article>`).join('')) + '</section>';
+}
+async function loadList() {
+  if (!currentRound()) {
+    $('content').innerHTML = '<div class="card">설정 메뉴에서 수서 차수를 먼저 만드세요.</div>';
+    return;
+  }
+  S.list = await api('list');
+  S.selected.clear();
+  drawList();
+}
+
+function filteredList() {
+  let a = S.list.filter(x => (S.filter === '전체' || x.status === S.filter) && (S.groupFilter === '전체' || x.group === S.groupFilter) && (!S.q || (x.title + ' ' + x.name + ' ' + x.isbn).includes(S.q)));
+  a.sort(S.sort === 'title' ? (a, b) => a.title.localeCompare(b.title, 'ko') : (a, b) => b.created.localeCompare(a.created));
+  return a;
+}
+
+function drawList() {
+  const all = filteredList(),
+    pages = Math.max(1, Math.ceil(all.length / S.size));
+  S.page = Math.min(S.page, pages);
+  const list = all.slice((S.page - 1) * S.size, S.page * S.size);
+  $('content').innerHTML = `<section class="card"><h2>도서 선정</h2><div class="row toolbar"><select id="statusFilter" aria-label="상태">${['전체','신청','선정','보류'].map(x=>`<option ${x===S.filter?'selected':''}>${x}</option>`).join('')}</select><select id="groupFilter" aria-label="신청자 구분">${['전체','학생','교원','직원','학부모','수서'].map(x=>`<option ${x===S.groupFilter?'selected':''}>${x}</option>`).join('')}</select><select id="sort" aria-label="정렬"><option value="new" ${S.sort==='new'?'selected':''}>최근 신청순</option><option value="title" ${S.sort==='title'?'selected':''}>도서명순</option></select><input id="filterQ" value="${esc(S.q)}" placeholder="도서명·신청자·ISBN"><button id="applyFilter" class="light">찾기</button><select id="size" aria-label="페이지 표시 개수">${[20,50,100].map(x=>`<option ${S.size===x?'selected':''}>${x}</option>`).join('')}</select></div><div class="row toolbar"><button class="light" id="pageSelect">현재 페이지 선택</button><button class="light" id="allSelect">검색 결과 전체 선택</button><button class="light" id="clearSelect">선택 해제</button><span id="selectedCount">${S.selected.size}건 선택</span></div><div class="row toolbar"><button data-status="선정">선정</button><button class="yellow" data-status="보류">보류</button><button class="light" data-status="신청">신청으로 되돌리기</button><button class="light" id="listCheck">선택 도서 소장 재확인</button></div><div class="tablewrap"><table><thead><tr><th>선택</th><th>도서명 / ISBN</th><th>신청자</th><th>정가 / 90%</th><th>부수</th><th>이유</th><th>상태 / 소장</th><th>관리</th></tr></thead><tbody>${list.map(x=>`<tr><td><input type="checkbox" data-select="${esc(x.id)}" ${S.selected.has(x.id)?'checked':''} aria-label="${esc(x.title)} 선택"></td><td class="title">${esc(x.title)} ${x.duplicate?tag('중복 신청','hold'):''}<small>${esc(x.author)} · ${esc(x.publisher)}<br>${esc(x.isbn)}</small></td><td>${esc(x.group)} ${esc(x.name)}<small>${esc(x.number||x.subject||'')} ${esc(x.purpose)}<br>${time(x.created)}</small></td><td>${money(x.price)}<small>${money(Math.round(x.price*.9))}</small></td><td>${x.qty}</td><td>${esc(x.reason)}${x.selectionReason?'<small>선정: '+esc(x.selectionReason)+'</small>':''}</td><td>${tag(x.status,x.status==='보류'?'hold':'')}<small>${esc(x.holding)}</small>${x.notice?'<small>'+esc(x.notice)+'</small>':''}</td><td><button class="light" data-edit="${esc(x.id)}">편집</button>${x.status==='보류'?'<button class="light" data-unblock="'+esc(x.isbn)+'">차단 해제</button>':''}</td></tr>`).join('')}</tbody></table></div><div class="row toolbar"><button class="light" id="prev" ${S.page===1?'disabled':''}>이전</button><span>${S.page}/${pages}페이지 · ${all.length}건</span><button class="light" id="next" ${S.page===pages?'disabled':''}>다음</button><button class="light" id="refresh">새로고침</button></div></section>`;
+  const updateCount = () => $('selectedCount').textContent = S.selected.size + '건 선택';
+  $('statusFilter').onchange = e => {
+    S.filter = e.target.value;
+    S.page = 1;
+    S.selected.clear();
+    drawList();
+  };
+  $('groupFilter').onchange = e => {
+    S.groupFilter = e.target.value;
+    S.page = 1;
+    S.selected.clear();
+    drawList();
+  };
+  $('sort').onchange = e => {
+    S.sort = e.target.value;
+    drawList();
+  };
+  $('size').onchange = e => {
+    S.size = Number(e.target.value);
+    S.page = 1;
+    drawList();
+  };
+  $('applyFilter').onclick = () => {
+    S.q = $('filterQ').value.trim();
+    S.page = 1;
+    S.selected.clear();
+    drawList();
+  };
+  $('pageSelect').onclick = () => {
+    list.forEach(x => S.selected.add(x.id));
+    drawList();
+  };
+  $('allSelect').onclick = () => {
+    if (all.length > 500) {
+      toast('한 번에 최대 500건입니다. 필터로 범위를 줄여 주세요.');
+      return;
+    }
+    all.forEach(x => S.selected.add(x.id));
+    drawList();
+  };
+  $('clearSelect').onclick = () => {
+    S.selected.clear();
+    drawList();
+  };
+  $('content').querySelectorAll('[data-select]').forEach(c => c.onchange = () => {
+    c.checked ? S.selected.add(c.dataset.select) : S.selected.delete(c.dataset.select);
+    updateCount();
+  });
+  $('content').querySelectorAll('[data-status]').forEach(b => b.onclick = () => decideModal(b.dataset.status));
+  $('content').querySelectorAll('[data-edit]').forEach(b => b.onclick = () => editModal(S.list.find(x => x.id === b.dataset.edit)));
+  $('content').querySelectorAll('[data-unblock]').forEach(b => b.onclick = () => {
+    if (confirm('이 ISBN의 현재 차수 재신청 차단을 해제할까요?')) run(async () => {
+      await api('unblock', {
+        isbn: b.dataset.unblock
+      });
+      toast('차단을 해제했습니다.');
+    });
+  });
+  $('prev').onclick = () => {
+    S.page--;
+    drawList();
+  };
+  $('next').onclick = () => {
+    S.page++;
+    drawList();
+  };
+  $('refresh').onclick = () => run(loadList);
+  $('listCheck').onclick = () => run(() => checkBooks([...new Set(S.list.filter(x => S.selected.has(x.id)).map(x => x.isbn))]));
+}
+
+function decideModal(status) {
+  if (!S.selected.size) {
+    toast('도서를 선택하세요.');
+    return;
+  }
+  if (status !== '보류') {
+    if (confirm(S.selected.size + '건을 ' + status + ' 상태로 변경할까요?')) run(async () => {
+      await api('decide', {
+        ids: [...S.selected],
+        status
+      });
+      await loadList();
+      toast('처리했습니다.');
+    });
+    return;
+  }
+  modal(`<h2>${S.selected.size}건 보류</h2><label>보류 이유</label><select id="holdPreset"><option>예산 부족</option><option>본교 소장</option><option>품절·절판</option><option>학교도서관 선정 기준에 따른 재검토</option><option value="">직접 입력</option></select><label>처리 안내</label><textarea id="holdNotice" maxlength="1000">예산 부족</textarea><p class="muted">선택 도서에 같은 안내가 적용되고 해당 ISBN의 현재 차수 재신청을 차단합니다.</p><div class="actions"><button class="light" data-close>취소</button><button id="holdSave">보류 처리</button></div>`);
+  $('holdPreset').onchange = () => $('holdNotice').value = $('holdPreset').value;
+  $('holdSave').onclick = () => run(async () => {
+    await api('decide', {
+      ids: [...S.selected],
+      status: '보류',
+      notice: $('holdNotice').value
+    });
+    $('modal').close();
+    await loadList();
+  });
+}
+
+function editModal(x) {
+  modal(`<h2>선정 정보 편집</h2><h3>${esc(x.title)}</h3><label>부수</label><input id="editQty" type="number" min="1" max="${x.kind==='수서'?9999:x.purpose==='수업용'?30:1}" value="${x.qty}"><label>정가</label><input id="editPrice" type="number" min="1" value="${x.price}"><label>선정 이유</label><textarea id="editReason" maxlength="2000">${esc(x.selectionReason|| (x.kind==='수서'?x.reason:''))}</textarea>${x.recommendation?'<details><summary>외부 추천 사유</summary><p>'+esc(x.recommendation)+'</p></details>':''}<p class="muted">처리 상태는 유지합니다. 정가 변경은 같은 ISBN의 도서정보에 적용됩니다.</p><div class="actions"><button class="light" data-close>취소</button><button id="editSave">저장</button></div>`);
+  $('editSave').onclick = () => run(async () => {
+    await api('bookPrice', {
+      isbn: x.isbn,
+      price: Number($('editPrice').value)
+    });
+    await api('decide', {
+      ids: [x.id],
+      status: x.status,
+      qty: Number($('editQty').value),
+      reason: $('editReason').value,
+      notice: x.notice
+    });
+    $('modal').close();
+    await loadList();
+  });
+}
+async function checkBooks(isbns) {
+  if (!isbns.length) throw Error('점검할 도서를 선택하세요.');
+  let hits = [],
+    unknown = [],
+    classCount = 0;
+  for (let i = 0; i < isbns.length; i += 10) {
+    const a = await api('recheck', {
+      isbns: isbns.slice(i, i + 10)
+    });
+    a.forEach(x => {
+      if (x.state === '소장') {
+        if (x.ids.length) hits.push(x);
+        classCount += x.classCount;
+      }
+      if (x.state === '확인 불가') unknown.push(x.isbn);
+    });
+  }
+  if (hits.length) {
+    const ids = hits.flatMap(x => x.ids);
+    if (confirm(`소장 도서 ${hits.length}종, 수업용을 제외한 선정 ${ids.length}건이 확인됐습니다.\n해당 선정 건 전체를 '본교 소장' 사유로 보류할까요?\n수업용 ${classCount}건은 선정 상태를 유지합니다.`)) {
+      for (let i = 0; i < ids.length; i += 500) await api('decide', {
+        ids: ids.slice(i, i + 500),
+        status: '보류',
+        notice: '본교 소장'
+      });
+    }
+  }
+  toast('복본 점검 완료' + (unknown.length ? ' · 확인 불가 ' + unknown.length + '종' : '') + (classCount ? ' · 소장 수업용 ' + classCount + '건 별도 확인' : ''));
+  if (S.tab === '결과') await loadResult();
+  else await loadList();
+}
+async function loadResult() {
+  if (!currentRound()) {
+    $('content').innerHTML = '<div class="card">수서 차수를 선택하세요.</div>';
+    return;
+  }
+  S.result = await api('result');
+  drawResult();
+}
+
+function resultFiltered() {
+  const q = $('resultQ')?.value.trim() || '';
+  return S.result.filter(x => !q || (x.title + ' ' + x.isbn + ' ' + x.note).includes(q));
+}
+
+function drawResult() {
+  const a = S.result;
+  $('content').innerHTML = `<section class="card"><h2>수서 결과</h2><div class="summary">${a.length}종 · ${a.reduce((s,x)=>s+x.qty,0)}부 · 정가 합계 ${money(a.reduce((s,x)=>s+x.total,0))}</div><div class="row toolbar"><input id="resultQ" placeholder="도서명·ISBN·신청자"><button class="light" id="resultFilter">필터 적용</button><button id="checkAll" class="yellow">소장 여부 다시 확인</button><button id="xlsxAll">전체 엑셀</button><button id="xlsxFiltered" class="light">필터 결과 엑셀</button><button id="txtAll" class="light">TXT 대체 다운로드</button></div><p class="muted">정가 기준 합계입니다. 선정 화면의 90% 금액은 참고 금액입니다. 선정 건이 변경되면 통합 부수 수정값은 재검토를 위해 초기화됩니다.</p><div id="resultTable"></div></section>`;
+  drawResultTable(a);
+  $('resultFilter').onclick = () => drawResultTable(resultFiltered());
+  $('checkAll').onclick = () => run(() => checkBooks(S.result.map(x => x.isbn)));
+  $('xlsxAll').onclick = () => download(S.result, false);
+  $('xlsxFiltered').onclick = () => download(resultFiltered(), false);
+  $('txtAll').onclick = () => download(S.result, true);
+}
+
+function drawResultTable(a) {
+  $('resultTable').innerHTML = '<div class="tablewrap"><table><thead><tr><th>연번</th><th>도서명 / ISBN</th><th>저자·출판사</th><th>정가</th><th>부수</th><th>합계</th><th>선정 이유</th><th>비고</th><th>관리</th></tr></thead><tbody>' + a.map((x, i) => `<tr><td>${i+1}</td><td class="title">${esc(x.title)} ${x.duplicate?tag('중복 통합','hold'):''}<small>${esc(x.isbn)} · ${esc(x.holding)}</small></td><td>${esc(x.author)}<small>${esc(x.publisher)}</small></td><td>${money(x.price)}</td><td>${x.qty}</td><td>${money(x.total)}</td><td>${esc(x.reason)}</td><td>${esc(x.note)}</td><td><button class="light" data-result="${esc(x.isbn)}">수정</button></td></tr>`).join('') + '</tbody></table></div>';
+  $('resultTable').querySelectorAll('[data-result]').forEach(b => b.onclick = () => {
+    const x = S.result.find(x => x.isbn === b.dataset.result);
+    modal(`<h2>최종 수서 정보</h2><h3>${esc(x.title)}</h3><label>최종 부수</label><input id="finalQty" type="number" min="1" max="9999" value="${x.qty}"><label>최종 선정 이유</label><textarea id="finalReason" maxlength="2000">${esc(x.reason)}</textarea><div class="actions"><button class="light" data-close>취소</button><button id="finalSave">저장</button></div>`);
+    $('finalSave').onclick = () => run(async () => {
+      await api('saveResult', {
+        isbn: x.isbn,
+        qty: Number($('finalQty').value),
+        reason: $('finalReason').value
+      });
+      $('modal').close();
+      await loadResult();
+    });
+  });
+}
+
+function spreadsheetRows(a) {
+  return [
+    ['연번', '도서명', '저자명', '출판사', '정가', '부수', '합계', 'ISBN', '선정 이유', '비고'], ...a.map((x, i) => [i + 1, x.title, x.author, x.publisher, x.price, x.qty, x.total, String(x.isbn), x.reason, x.note]), ['합계', '', '', '', '', a.reduce((s, x) => s + x.qty, 0), a.reduce((s, x) => s + x.total, 0), '', '', '']
+  ];
+}
+
+function download(a, txt) {
+  if (!a.length) {
+    toast('선정 도서가 없습니다.');
+    return;
+  }
+  if (a.some(x => x.price <= 0)) {
+    toast('정가가 없는 도서는 선정 메뉴에서 정가를 입력하세요.');
+    return;
+  }
+  if (a.some(x => !x.reason) && !confirm('선정 이유가 비어 있는 도서가 있습니다. 그대로 다운로드할까요?')) return;
+  const r = currentRound(),
+    name = S.school.name + '_' + r.year + '학년도_' + r.number + '차_수서결과',
+    data = spreadsheetRows(a);
+  if (!txt && window.XLSX) {
+    const ws = XLSX.utils.aoa_to_sheet(data);
+    ws['!cols'] = [{
+      wch: 6
+    }, {
+      wch: 35
+    }, {
+      wch: 23
+    }, {
+      wch: 20
+    }, {
+      wch: 12
+    }, {
+      wch: 8
+    }, {
+      wch: 14
+    }, {
+      wch: 18
+    }, {
+      wch: 45
+    }, {
+      wch: 65
+    }];
+    ws['!autofilter'] = {
+      ref: 'A1:J' + (a.length + 1)
+    };
+    for (let i = 2; i <= a.length + 1; i++) {
+      ws['H' + i].t = 's';
+      ['E', 'G'].forEach(c => {
+        ws[c + i].z = '#,##0';
+      });
+    }
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, '수서 결과');
+    XLSX.writeFile(wb, name + '.xlsx');
+    return;
+  }
+  if (!txt) toast('엑셀 라이브러리를 불러오지 못해 TXT로 다운로드합니다.');
+  const clean = v => {
+    let s = String(v ?? '').replace(/[\t\r\n]/g, ' ');
+    return /^[=+\-@]/.test(s) ? "'" + s : s;
+  };
+  const blob = new Blob(['\ufeff' + data.map(row => row.map(clean).join('\t')).join('\r\n')], {
+    type: 'text/plain;charset=utf-8'
+  });
+  const url = URL.createObjectURL(blob),
+    link = document.createElement('a');
+  link.href = url;
+  link.download = name + '.txt';
+  link.click();
+  setTimeout(() => URL.revokeObjectURL(url), 2000);
+}
+async function settings() {
+  const d = await api('settings');
+  $('content').innerHTML = `<section class="card"><h2>학교 설정</h2><label>독서로 학교 검색 링크</label><input id="schoolLink" value="${esc(d.school.link)}"><div class="two"><div><label>학교급</label><select id="schoolLevel">${['초등학교','중학교','고등학교'].map(v=>`<option ${v===d.profile.level?'selected':''}>${v}</option>`).join('')}</select></div><div><label>학생 구성</label><select id="schoolGender">${['남학생 중심','여학생 중심','전체'].map(v=>`<option ${v===d.profile.gender?'selected':''}>${v}</option>`).join('')}</select></div></div><button id="profileSave" class="light">추천 기본조건 저장</button><p class="muted">학교 변경 시 이전 기록은 보존되고 학교별로 구분됩니다. 새 학교는 새로운 차수를 설정하세요.</p><div class="row"><button class="light" id="schoolProbe">연결 확인</button><button id="schoolSave">학교 정보 저장</button></div><p id="probeResult" class="muted"></p></section><section class="card"><h2>접수 차수·기간</h2><label>기존 차수 선택 / 신규</label><select id="roundEdit"><option value="">새 차수</option>${d.rounds.map(r=>`<option value="${esc(r.id)}">${r.year}학년도 ${r.number}차</option>`).join('')}</select><div class="two"><div><label>학년도</label><input type="number" id="year" min="2000" max="2100" value="${new Date().getFullYear()}"></div><div><label>차수</label><input type="number" id="roundNumber" min="1" max="99" value="1"></div><div><label>시작일</label><input type="date" id="start"></div><div><label>종료일</label><input type="date" id="end"></div></div><label class="row"><input type="checkbox" id="enabled" checked>접수 허용</label><p class="muted">종료일 한국 시간 23:59:59까지 접수합니다. 같은 학년도·차수를 저장하면 기간과 접수 허용 설정을 수정합니다.</p><button id="roundSave">차수·기간 저장</button></section>${apiCards(d.keys)}`;
+  bindApiSettings(d.keys);
+  let verified = '';
+  $('profileSave').onclick = () => run(async () => {
+    await api('saveProfile', {
+      level: $('schoolLevel').value,
+      gender: $('schoolGender').value
+    });
+    await init();
+    toast('학교 추천 기본조건을 저장했습니다.');
+  });
+  $('schoolLink').oninput = () => verified = '';
+  $('schoolProbe').onclick = () => run(async () => {
+    const h = await api('probeSchool', {
+      link: $('schoolLink').value
+    });
+    $('probeResult').textContent = h.state + ' · ' + h.detail;
+    if (h.state !== '확인 불가') {
+      verified = $('schoolLink').value;
+      toast('응답 구조를 확인했습니다. 학교명과 코드를 확인한 뒤 저장하세요.');
+    }
+  });
+  $('schoolSave').onclick = () => run(async () => {
+    if (verified !== $('schoolLink').value) throw Error('먼저 연결 확인을 실행하세요.');
+    if (!confirm('학교 정보를 변경할까요? 기존 기록은 보존됩니다.')) return;
+    await api('saveSchool', {
+      link: $('schoolLink').value
+    });
+    await init();
+    S.list = [];
+    S.result = [];
+    S.books = [];
+    await settings();
+  });
+  $('roundEdit').onchange = () => {
+    const r = d.rounds.find(x => x.id === $('roundEdit').value);
+    if (r) {
+      $('year').value = r.year;
+      $('roundNumber').value = r.number;
+      $('start').value = r.start;
+      $('end').value = r.end;
+      $('enabled').checked = r.enabled === 'true';
+    }
+  };
+  $('roundSave').onclick = () => run(async () => {
+    await api('saveRound', {
+      year: Number($('year').value),
+      number: Number($('roundNumber').value),
+      start: $('start').value,
+      end: $('end').value,
+      enabled: $('enabled').checked
+    });
+    await init();
+    toast('접수 설정을 저장했습니다.');
+    await settings();
+  });
+}
+
+function apiCards(keys) {
+  return '<section class="card"><h2>API 연결 설정</h2><p class="muted">키 입력 → 연결 확인 → 저장 순서입니다. 국립중앙도서관 승인 전에도 예스24로 운영할 수 있습니다.</p><div class="two">' + keys.map((k, i) => `<div class="api-card"><h3>${esc(k.source)}</h3><p>${tag(k.set?(k.enabled?'연결 설정됨':'사용 중지'):'연결 준비 중',k.set&&k.enabled?'':'hold')}</p><p class="muted">${k.checked?'최근 확인: '+time(k.checked):'아직 연결 확인 기록이 없습니다.'}</p><label for="apiKey${i}">API 키 ${k.set?'· 저장된 키는 원문으로 표시하지 않습니다.':''}</label><input type="password" id="apiKey${i}" maxlength="600" autocomplete="off" placeholder="${k.set?'•••••••• · 변경할 때만 새 키 입력':'발급받은 키를 입력하세요'}"><label class="row"><input type="checkbox" id="apiEnabled${i}" ${k.enabled?'checked':''}>사용</label><div class="row"><button class="light" id="apiProbe${i}">연결 확인</button><button id="apiSave${i}">저장</button>${k.set?'<button class="danger" id="apiRemove'+i+'">연결 해제</button>':''}</div><p id="apiMessage${i}" class="muted" aria-live="polite"></p></div>`).join('') + '</div></section>';
+}
+
+function bindApiSettings(keys) {
+  keys.forEach((k, i) => {
+    let proof = '';
+    const input = $('apiKey' + i);
+    input.oninput = () => {
+      proof = '';
+      $('apiMessage' + i).textContent = '키가 변경되었습니다. 연결 확인을 다시 실행하세요.';
+    };
+    $('apiProbe' + i).onclick = () => run(async () => {
+      const d = await api('probeApi', {
+        source: k.source,
+        key: input.value.trim()
+      });
+      proof = d.proof;
+      $('apiMessage' + i).textContent = d.message + ' 저장 버튼을 눌러 적용하세요.';
+    });
+    $('apiSave' + i).onclick = () => run(async () => {
+      if (!proof) throw Error('먼저 연결 확인을 실행하세요.');
+      await api('saveApi', {
+        source: k.source,
+        key: input.value.trim(),
+        proof,
+        enabled: $('apiEnabled' + i).checked
+      });
+      input.value = '';
+      proof = '';
+      await init();
+      await settings();
+      toast(k.source + ' 연결 설정을 저장했습니다.');
+    });
+    if (k.set) $('apiRemove' + i).onclick = () => {
+      if (confirm(k.source + ' 연결을 해제하고 저장된 키를 삭제할까요?')) run(async () => {
+        await api('removeApi', {
+          source: k.source
+        });
+        await init();
+        await settings();
+      });
+    };
+  });
+}
+
+entry();
+run(init);
+</script>
+</body>
+</html>
