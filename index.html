@@ -219,7 +219,38 @@ function entry() {
   ];
   $('groups').innerHTML = gs.map(([g, i]) => `<button type="button" class="group ${g===S.group?'active':''}" data-group="${g}">${i}<br>${g}</button>`).join('');
   const student = ['학생', '학부모'].includes(S.group);
-  $('identityFields').innerHTML = (student ? '<div><label for="number">' + (S.group === '학부모' ? '학생 학번' : '학번') + '</label><input id="number" inputmode="numeric" pattern="[0-9]{4,8}" maxlength="8" required></div>' : '') + '<div><label for="name">' + (S.group === '학부모' ? '학생 이름' : '이름') + '</label><input id="name" maxlength="40" autocomplete="off" required></div>' + (S.group === '교원' ? '<div><label for="subject">과목</label><input id="subject" maxlength="40" required></div>' : S.group === '직원' ? '<div><label>소속</label><input value="행정실" readonly></div>' : '');
+  const nameField = `
+  <div>
+    <label for="name">${S.group === '학부모' ? '학생 성명' : '성명'}</label>
+    <input id="name" maxlength="40" autocomplete="off" required>
+  </div>
+`;
+
+if (student) {
+  $('identityFields').innerHTML = `
+    <div>
+      <label for="number">${S.group === '학부모' ? '학생 학번' : '학번'}</label>
+      <input id="number" inputmode="numeric"
+             pattern="[0-9]{4,8}" maxlength="8" required>
+    </div>
+    ${nameField}
+  `;
+} else if (S.group === '교원') {
+  $('identityFields').innerHTML = `
+    <div>
+      <label for="subject">과목</label>
+      <input id="subject" maxlength="40" required>
+    </div>
+    ${nameField}
+  `;
+} else if (S.group === '직원') {
+  $('identityFields').innerHTML = `
+    <div>
+      <label for="staffDepartment">소속</label>
+      <input id="staffDepartment" value="행정실" readonly>
+    </div>
+    ${nameField}
+  `;
 }
 $('groups').onclick = e => {
   const b = e.target.closest('[data-group]');
