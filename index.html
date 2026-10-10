@@ -11,6 +11,28 @@
      실배포 iframe 통신은 학교 브라우저·Google 정책에 따라 검증 필요. -->
 <style>
 :root{--blue:#285dcc;--ink:#243047;--muted:#748095;--line:#e3e8ef;--bg:#f5f7fa;--yellow:#fff3d3}*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:14px/1.55 -apple-system,BlinkMacSystemFont,'Segoe UI','Apple SD Gothic Neo','Malgun Gothic',sans-serif}button,input,select,textarea{font:inherit}header{background:#fff;border-bottom:1px solid var(--line)}.wrap{max-width:1240px;margin:auto;padding:24px 28px}header .wrap{display:flex;align-items:center;justify-content:space-between;gap:16px;padding-top:17px;padding-bottom:17px}h1{font-size:20px;letter-spacing:-.6px;margin:0}h2{font-size:20px;letter-spacing:-.5px;margin:0 0 18px;font-weight:650}h3{font-size:16px;margin:0 0 8px;line-height:1.5}p{line-height:1.7}.home-link{color:inherit;text-decoration:none}.home-link:focus-visible,button:focus-visible{outline:3px solid #a9c5fc;outline-offset:3px}button{border:1px solid transparent;border-radius:7px;background:var(--blue);color:#fff;padding:7px 13px;min-height:36px;font-weight:600;cursor:pointer;white-space:nowrap;transition:background .15s,box-shadow .15s}button:hover{filter:brightness(.96)}button:disabled{opacity:.48;cursor:default}.light{background:#fff;border-color:#dce3ed;color:#4b5c75}.yellow{background:var(--yellow);border-color:#f1dfae;color:#80601e}.danger{background:#fff1f1;border-color:#f4d8d8;color:#b14646}.card{background:#fff;border:1px solid var(--line);border-radius:12px;padding:24px;margin-bottom:18px;box-shadow:0 2px 7px #253d6210}.hero{position:relative;overflow:hidden;padding:26px 28px;background:linear-gradient(115deg,#edf4ff,#f8fbff 78%,#fff8e5);box-shadow:none}.hero h2{font-size:25px;line-height:1.4;margin:0 0 8px;letter-spacing:-.8px}.hero p{color:#687b96;margin:0 0 18px}.hero>.row{max-width:740px}.eyebrow{display:block;font-size:10px;letter-spacing:1.8px;color:#557bab;font-weight:700;margin-bottom:10px}.book-art{display:none}.muted{color:var(--muted);font-size:13px}.row{display:flex;align-items:center;gap:8px;flex-wrap:wrap}.grow{flex:1;min-width:160px}label{display:block;font-size:13px;font-weight:600;margin:12px 0 6px}input,select,textarea{width:100%;padding:8px 11px;border:1px solid #d7dfe9;border-radius:7px;background:#fff;color:var(--ink);min-height:38px}input:focus,select:focus,textarea:focus{outline:3px solid #e7efff;border-color:#81a5eb}textarea{min-height:100px;resize:vertical}input[readonly]{background:#f5f7fa}input[type=checkbox]{width:17px;height:17px;min-height:0;accent-color:var(--blue);margin:3px}.groups{display:grid;grid-template-columns:repeat(4,1fr);gap:9px;margin:18px 0}.group{background:#f8fafc;color:#596a82;border:1px solid var(--line);padding:13px 10px;font-size:15px}.group.active{background:#edf3ff;border-color:#6d96e5;color:var(--blue);box-shadow:inset 0 0 0 1px #6d96e5}nav{display:flex;gap:4px;flex-wrap:wrap;margin:4px 0 20px;padding:0 0 10px;border-bottom:1px solid var(--line)}nav button{background:transparent;color:#768399;border:0;padding:8px 15px}nav button.active{background:#e8effc;color:var(--blue)}.badge{display:inline-block;padding:3px 7px;border-radius:5px;background:#edf3ff;color:#4068a4;font-size:11px;font-weight:600;white-space:nowrap}.badge.hold{background:#fff4d9;color:#8c6826}.badge.no{background:#fff0ef;color:#b4554b}.books{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}.book{display:flex;gap:18px;border:1px solid var(--line);border-radius:10px;padding:20px;background:#fff}.cover{width:78px;height:114px;object-fit:contain;background:#f3f6fa;border-radius:3px}.bookmain{min-width:0;flex:1}.bookmain h3{font-size:16px}.bookmain p{margin:7px 0;font-size:13px;color:#748095}.bookmain a{color:var(--blue);text-decoration:none}.bookmain button{margin-top:7px}.tablewrap{overflow:auto;border:1px solid var(--line);border-radius:8px;margin-top:16px}table{width:100%;border-collapse:collapse;min-width:880px}th,td{padding:12px;text-align:left;border-bottom:1px solid var(--line);vertical-align:top;font-size:13px}th{background:#f7f9fc;color:#63728a;white-space:nowrap;font-size:12px;font-weight:600}tbody tr:last-child td{border-bottom:0}tbody tr:hover{background:#fbfcff}td.title{min-width:210px;font-weight:600}td small{display:block;color:var(--muted);margin-top:5px;line-height:1.55;font-weight:400}td button{font-size:12px;padding:5px 9px;min-height:30px;margin:0 3px 4px 0}.toolbar{margin:12px 0;gap:7px}.toolbar select,.toolbar input{width:auto;max-width:240px;min-height:35px;padding:6px 10px;font-size:13px}.toolbar button{font-size:13px;min-height:34px;padding:6px 11px}.empty{text-align:center;color:var(--muted);padding:36px}.hidden{display:none!important}dialog{border:1px solid var(--line);border-radius:14px;padding:26px;width:min(540px,94vw);color:var(--ink);max-height:90vh;overflow:auto;box-shadow:0 24px 80px #172b4d30}dialog::backdrop{background:#172b4d65;backdrop-filter:blur(3px)}.actions{display:flex;gap:8px;justify-content:flex-end;margin-top:22px}#toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);max-width:90vw;z-index:30;background:#243047;color:white;padding:12px 18px;border-radius:8px;white-space:pre-line;box-shadow:0 4px 20px #0002}#busy{position:fixed;inset:0;background:#ffffffb8;z-index:50;display:flex;justify-content:center;align-items:center;backdrop-filter:blur(2px)}#busy div{background:white;padding:22px 30px;border-radius:12px;box-shadow:0 8px 30px #174e7e22}footer{text-align:center;color:#8994a5;padding:18px;font-size:12px}.summary{background:#f0f5fd;border:1px solid #e0e9fa;border-radius:8px;padding:14px 18px;margin:14px 0;font-weight:600}.consent{background:#fff8e8;padding:12px;border-radius:7px;display:flex;gap:9px;align-items:flex-start;line-height:1.65}.consent input{flex-shrink:0;margin-top:4px}.two{display:grid;grid-template-columns:1fr 1fr;gap:16px}.api-card{background:#fafbfd;border:1px solid var(--line);border-radius:9px;padding:20px}details{font-size:13px;color:#687b96}summary{cursor:pointer}#selectedCount{color:#718097;font-size:12px;padding:0 5px}@media(max-width:720px){.wrap{padding:16px}.card{padding:18px}.groups{grid-template-columns:repeat(4,1fr);gap:6px}.group{font-size:13px;padding:12px 4px}.books,.two{grid-template-columns:1fr}h1{font-size:17px}header .wrap{align-items:flex-start;flex-wrap:wrap;padding:14px 16px}header button{font-size:12px;min-height:32px;padding:5px 9px}.hero{padding:22px}.hero h2{font-size:22px}.book{padding:16px;gap:14px}.cover{width:65px;height:96px}.toolbar{gap:8px}.toolbar button{min-height:38px}dialog{padding:20px}nav button{padding:9px 11px}.hero .badge{white-space:normal}.toolbar input{max-width:100%}}
+
+.pagination{justify-content:center;gap:14px}.pagination button:not(#refresh){background:var(--blue);color:white;min-width:78px}
+/* 개정 5: 간결한 입장 화면·중앙 페이지 이동·전체 너비 하단 바 */
+body{min-height:100vh;display:flex;flex-direction:column}main.wrap{width:100%;flex:1}.hero{padding:20px 26px}.hero h2{font-size:22px}.hero p{margin-bottom:12px}.eyebrow{margin-bottom:7px}.groups{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0}.group{font-size:14px;padding:8px 18px;min-height:36px}.entry-line{display:flex;align-items:flex-end;gap:14px}#identityFields{flex:1;min-width:0}.start-button{height:42px;min-width:155px;font-size:15px}.entry-line input{height:42px}#entryForm>.muted{margin-bottom:0}#searchPager{justify-content:center;margin:24px 0;gap:18px}#searchPager button{min-width:78px}footer{width:100%;background:#fff;border-top:1px solid var(--line);padding:22px 16px;margin-top:18px;color:var(--ink)}#footerTitle{font-size:18px;font-weight:650;letter-spacing:-.4px}#footerRound{font-size:13px;color:var(--blue);margin-top:6px}@media(max-width:720px){.entry-line{display:block}.start-button{width:100%;margin-top:16px}#identityFields{grid-template-columns:1fr}.group{padding:8px 11px}.hero h2{font-size:20px}#footerTitle{font-size:16px}}
+
+/* 신청자 입력: 가로 라벨 + 세로 두 줄, 오른쪽 시작 버튼 */
+#entry{padding:24px;border-radius:18px;background:#fff;border-color:#e2ebf7;box-shadow:0 3px 18px #496d9a08}
+#entry .groups{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px;margin:0 0 22px;padding:7px;background:#f0f6ff;border-radius:18px}
+#entry .group{display:flex;align-items:center;justify-content:center;gap:9px;min-width:0;min-height:46px;padding:9px 12px;border:0;border-radius:24px;background:transparent;color:#475a76;font-size:16px;font-weight:600;box-shadow:none}
+#entry .group.active{background:#fff;color:#2876d7;box-shadow:0 3px 12px #40669d12}
+#entry .group-icon{width:23px;height:23px;flex:none;color:#829bb9}#entry .group.active .group-icon{color:#3685de}#entry [data-group="학부모"] .group-icon{color:#91b586}
+#entry .entry-line{display:grid;grid-template-columns:minmax(0,1fr) 170px;align-items:stretch;gap:24px}
+#entry #identityFields{display:grid;grid-template-columns:minmax(0,1fr);gap:18px;min-width:0}
+#entry #identityFields>div{display:grid;grid-template-columns:76px minmax(0,1fr);align-items:center;gap:14px}
+#entry #identityFields label{margin:0;color:#2f4360;font-size:16px;font-weight:600;line-height:1.4}
+#entry #identityFields input{width:100%;min-width:0;height:52px;background:#f7faff;border:1px solid #dce7f5;border-radius:12px;padding:12px 16px;font-size:16px}
+#entry #identityFields input::placeholder{color:#a3afbf;opacity:1;font-weight:400}
+#entry #identityFields input:focus::placeholder{color:transparent}
+#entry #identityFields input:focus{background:#fff;border-color:#8eb2ef;outline:3px solid #edf4ff}
+#entry .start-button{width:100%;height:auto;min-width:0;min-height:122px;margin:0;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:5px;padding:16px;border:0;border-radius:16px;background:#4b7be5;font-size:19px;font-weight:600;box-shadow:none}
+#entry .start-arrow{font-size:27px;line-height:1.15;font-weight:400}
+@media(max-width:600px){#entry{padding:16px}#entry .groups{padding:5px;gap:2px;margin-bottom:18px;border-radius:14px}#entry .group{font-size:13px;gap:5px;min-height:40px;padding:7px 4px}#entry .group-icon{width:18px;height:18px}#entry .entry-line{grid-template-columns:minmax(0,1fr) 86px;gap:12px}#entry #identityFields{gap:14px}#entry #identityFields>div{grid-template-columns:48px minmax(0,1fr);gap:7px}#entry #identityFields label{font-size:13px}#entry #identityFields input{height:48px;padding:10px;font-size:16px;border-radius:10px}#entry .start-button{min-height:110px;padding:10px 4px;border-radius:12px;font-size:15px}#entry .start-arrow{font-size:25px}}
 </style>
 <script src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js" defer></script>
 </head>
@@ -18,9 +40,9 @@
 <header><div class="wrap"><h1><a id="homeLink" class="home-link" href="" aria-label="도서관 첫 화면 새로고침">📚 <span id="schoolName">대현고등학교 도서관</span></a></h1><div class="row"><span id="who" class="muted"></span><button class="light" id="leave">사용자 변경</button><button class="light" id="adminLogin">관리자</button></div></div></header>
 <main class="wrap">
 <section class="card hero"><div class="book-art" aria-hidden="true"><i></i><i></i><i></i><i></i><span>BOOKS</span></div><span class="eyebrow">OUR LIBRARY · BOOK WISH</span><h2>한 권의 신청이,<br>우리 도서관의 다음 책이 됩니다.</h2><p>읽고 싶은 책을 찾아, 도서관에 알려주세요.</p><div class="row"><select id="round" class="grow" aria-label="수서 차수"></select><span id="period" class="badge hold"></span></div></section>
-<section id="entry" class="card"><h2>어떤 분이 신청하시나요?</h2><div class="groups" id="groups"></div><form id="entryForm"><div id="identityFields" class="two"></div><p class="muted">입력한 정보로 신청 내역을 다시 확인할 수 있습니다. 본인 정보를 정확하게 입력해 주세요.</p><button type="submit">시작하기 →</button></form></section>
+<section id="entry" class="card" aria-label="신청자 정보 입력"><div class="groups" id="groups"></div><form id="entryForm"><div class="entry-line"><div id="identityFields" class="two"></div><button class="start-button" type="submit"><span>시작하기</span><span class="start-arrow" aria-hidden="true">→</span></button></div></form></section>
 <section id="app" class="hidden"><nav id="nav"></nav><div id="content"></div></section>
-</main><footer>학교도서관 도서 신청·선정</footer>
+</main><footer><div id="footerTitle">📚 도서관 도서 신청</div><div id="footerRound"></div></footer>
 <dialog id="modal"><div id="modalContent"></div></dialog><div id="toast" class="hidden" role="status"></div><div id="busy" class="hidden" role="status"><div>자료를 확인하고 있습니다…</div></div>
 <script>
 'use strict';
@@ -192,8 +214,19 @@ function setRounds(rs) {
 }
 
 function period() {
+  updateFooter();
   const r = currentRound();
   $('period').textContent = r ? `${r.start} ~ ${r.end} · ${isOpen()?'접수 중':'접수 전 또는 마감'}` : '관리자가 접수 차수를 설정해야 합니다.';
+}
+
+function updateFooter() {
+  const r = currentRound(),
+    today = new Intl.DateTimeFormat('sv-SE', {
+      timeZone: 'Asia/Seoul'
+    }).format(new Date());
+  $('footerTitle').textContent = (S.profile.footerIcon || '📚') + ' ' + (S.profile.footerText || ((S.school?.name || '학교') + ' 도서관 도서 신청'));
+  const state = r ? (isOpen() ? '접수 중' : today < r.start ? '접수 예정' : '접수 마감') : '';
+  $('footerRound').textContent = r ? `${r.year}학년도 ${r.number}차 · ${state}` : '접수 차수 준비 중';
 }
 async function init() {
   const d = await api('init');
@@ -208,19 +241,19 @@ async function init() {
 }
 
 function entry() {
-  const gs = [
-    ['학생', '🎒'],
-    ['교원', '📖'],
-    ['직원', '🏫'],
-    ['학부모', '🌱']
-  ];
-  $('groups').innerHTML = gs.map(([g, i]) => `<button type="button" class="group ${g===S.group?'active':''}" data-group="${g}">${i}<br>${g}</button>`).join('');
+  const icons={
+    '학생':'<path d="M9 5V4a3 3 0 0 1 6 0v1M6 10a6 6 0 0 1 12 0v10H6z"/><path d="M6 13h12M9 16v4M15 16v4"/>',
+    '교원':'<path d="M12 6C9 3 5 3 2 4v15c4-1 7-1 10 2 3-3 6-3 10-2V4c-3-1-7-1-10 2v15"/>',
+    '직원':'<path d="M3 21V9l9-5 9 5v12H3zM9 21v-7h6v7M12 4V1l5 1-5 2"/>',
+    '학부모':'<path d="M12 22V11M12 13C5 13 2 9 3 4c6 0 9 3 9 9zM12 13c7 0 10-4 9-9-6 0-9 3-9 9z"/>'
+  };
+  $('groups').innerHTML = Object.keys(icons).map(g => `<button type="button" class="group ${g===S.group?'active':''}" data-group="${g}" aria-pressed="${g===S.group}"><svg class="group-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${icons[g]}</svg><span>${g}</span></button>`).join('');
   const student = ['학생', '학부모'].includes(S.group);
-  const nameField = (label) => `<div><label for="name">${label}</label><input id="name" maxlength="40" autocomplete="off" required></div>`;
+  const nameField = (label) => `<div><label for="name">${label}</label><input id="name" maxlength="40" autocomplete="off" placeholder="예시) 홍길동" required></div>`;
   if (student) {
-    $('identityFields').innerHTML = `<div><label for="number">${S.group === '학부모' ? '학생 학번' : '학번'}</label><input id="number" inputmode="numeric" pattern="[0-9]{4,8}" maxlength="8" required></div>` + nameField(S.group === '학부모' ? '학생 이름' : '이름');
+    $('identityFields').innerHTML = `<div><label for="number">${S.group === '학부모' ? '학생 학번' : '학번'}</label><input id="number" placeholder="예시) 10101" inputmode="numeric" pattern="[0-9]{4,8}" maxlength="8" required></div>` + nameField(S.group === '학부모' ? '학생 이름' : '성명');
   } else if (S.group === '교원') {
-    $('identityFields').innerHTML = `<div><label for="subject">과목</label><input id="subject" maxlength="40" autocomplete="off" required></div>` + nameField('성명');
+    $('identityFields').innerHTML = `<div><label for="subject">과목</label><input id="subject" placeholder="예시) 수학" maxlength="40" autocomplete="off" required></div>` + nameField('성명');
   } else if (S.group === '직원') {
     $('identityFields').innerHTML = `<div><label for="staffDepartment">소속</label><input id="staffDepartment" value="행정실" readonly></div>` + nameField('성명');
   }
@@ -326,7 +359,7 @@ function searchScreen() {
   const admin = S.tab === '수서';
   S.books = [];
   S.searchPage = 1;
-  $('content').innerHTML = `<section class="card"><h2>${admin?'수서 후보 찾기':'도서 신청'}</h2>${!admin&&!isOpen()?'<p class="consent">현재 접수 전이거나 신청이 마감되었습니다. 내 신청 내역은 확인할 수 있습니다.</p>':''}<form id="searchForm">${admin?'<div class="two"><div><label>제공처</label><select id="source"><option>예스24</option><option value="국립중앙도서관">국립중앙도서관</option></select></div><div><label>분야</label><select id="category"><option value="">전체</option></select></div></div><div class="row toolbar"><select id="recType" aria-label="추천 종류"><option value="best">베스트셀러</option><option value="new">신간</option></select><button type="button" class="yellow" id="recommend">추천 목록</button></div><div id="recommendFilters" class="two"><div><label>연령 조건</label><select id="recAge"><option value="10">10대</option><option value="255">전체 연령</option></select></div><div><label>성별 조건</label><select id="recSex"><option value="M">남성</option><option value="A">전체</option><option value="F">여성</option></select></div></div><p id="filterHelp" class="muted">베스트셀러의 연령·성별 조건입니다. 신간에는 적용되지 않습니다.</p><div class="row toolbar"><button type="button" class="light" id="teenPreset">청소년 분야</button><button type="button" class="light" id="profilePreset">학교 기본조건</button><button type="button" class="light" id="allPreset">전체 조건</button></div><div id="nlDates" class="two hidden"><div><label>추천 시작일</label><input id="nlStart" type="date"></div><div><label>추천 종료일</label><input id="nlEnd" type="date"></div></div>':''}<label for="q">도서명 · 저자 · ISBN</label><div class="row"><input class="grow" id="q" maxlength="150" placeholder="읽고 싶은 책을 검색하세요"><button>검색</button></div></form><p class="muted">${admin?'담은 도서는 후보로 저장됩니다. 선정 메뉴에서 검토 후 선정하세요.':'신청 후 수정·취소할 수 없습니다. 소장 확인 실패 시 확인이 필요한 신청으로 접수됩니다.'}</p></section><p id="searchContext" class="muted"></p><p id="holdingProgress" class="muted" aria-live="polite"></p><div id="bookResults"></div><div id="searchPager" class="row"></div>`;
+  $('content').innerHTML = `<section class="card"><h2>${admin?'수서 후보 찾기':'도서 신청'}</h2>${!admin&&!isOpen()?'<p class="consent">현재 접수 전이거나 신청이 마감되었습니다. 내 신청 내역은 확인할 수 있습니다.</p>':''}<form id="searchForm">${admin?'<div class="two"><div><label>제공처</label><select id="source"><option>예스24</option><option value="국립중앙도서관">국립중앙도서관</option></select></div><div><label>분야</label><select id="category"><option value="">전체</option></select></div></div><div class="row toolbar"><select id="recType" aria-label="추천 종류"><option value="best">베스트셀러</option><option value="new">신간</option></select><select id="recommendSize" aria-label="추천 표시 개수"><option value="10">10권씩</option><option value="20">20권씩</option><option value="50">50권씩</option><option value="100">100권씩</option></select><button type="button" class="yellow" id="recommend">추천 목록</button></div><div id="recommendFilters" class="two"><div><label>연령 조건</label><select id="recAge"><option value="10">10대</option><option value="255">전체 연령</option></select></div><div><label>성별 조건</label><select id="recSex"><option value="M">남성</option><option value="A">전체</option><option value="F">여성</option></select></div></div><p id="filterHelp" class="muted">베스트셀러의 연령·성별 조건입니다. 신간에는 적용되지 않습니다.</p><div class="row toolbar"><button type="button" class="light" id="teenPreset">청소년 분야</button><button type="button" class="light" id="profilePreset">학교 기본조건</button><button type="button" class="light" id="allPreset">전체 조건</button></div><div id="nlDates" class="two hidden"><div><label>추천 시작일</label><input id="nlStart" type="date"></div><div><label>추천 종료일</label><input id="nlEnd" type="date"></div></div>':''}<label for="q">도서명 · 저자 · ISBN</label><div class="row"><input class="grow" id="q" maxlength="150" placeholder="읽고 싶은 책을 검색하세요"><button>검색</button></div></form><p class="muted">${admin?'담은 도서는 후보로 저장됩니다. 선정 메뉴에서 검토 후 선정하세요.':'신청 후 수정·취소할 수 없습니다. 소장 확인 실패 시 확인이 필요한 신청으로 접수됩니다.'}</p></section><p id="searchContext" class="muted"></p><p id="holdingProgress" class="muted" aria-live="polite"></p><div id="bookResults"></div><div id="searchPager" class="row"></div>`;
   $('searchForm').onsubmit = e => {
     e.preventDefault();
     S.searchPage = 1;
@@ -339,6 +372,12 @@ function searchScreen() {
     $('recSex').value = S.profile.gender === '남학생 중심' ? 'M' : S.profile.gender === '여학생 중심' ? 'F' : 'A';
     $('recAge').value = S.profile.level === '초등학교' ? '255' : '10';
     $('recType').onchange = syncRecommendationFilters;
+    $('recommendSize').value = String(S.recommendSize || 10);
+    $('recommendSize').onchange = () => {
+      S.recommendSize = Number($('recommendSize').value);
+      S.searchPage = 1;
+      if (S.searchMode === 'recommend') run(doSearch);
+    };
     $('profilePreset').onclick = () => {
       $('recSex').value = S.profile.gender === '남학생 중심' ? 'M' : S.profile.gender === '여학생 중심' ? 'F' : 'A';
       $('recAge').value = S.profile.level === '초등학교' ? '255' : '10';
@@ -410,12 +449,14 @@ async function doSearch() {
     sex: admin ? $('recSex').value : 'A',
     age: admin ? Number($('recAge').value) : 255,
     page: S.searchPage,
+    pageSize: admin && S.searchMode === 'recommend' ? Number($('recommendSize').value) : 5,
     startDate: $('nlStart')?.value,
     endDate: $('nlEnd')?.value
   });
   if (seq !== S.searchSeq || $('round').value !== roundId) return;
   S.books = d.items;
   S.total = d.total;
+  S.searchSize = d.pageSize || 5;
   const national = source === '국립중앙도서관',
     isNew = admin && $('recType').value === 'new';
   $('searchContext').textContent = admin && S.searchMode === 'recommend' ? (national ? '국립중앙도서관 사서추천 · 기간·분야 조건' : isNew ? '예스24 신간 · 분야 조건' : `예스24 베스트셀러 · ${$('recAge').value==='10'?'10대':'전체 연령'} · ${{A:'전체 성별',M:'남성',F:'여성'}[$('recSex').value]}`) : '예스24 도서 검색 · 현재 페이지의 모든 유효 ISBN을 확인합니다.';
@@ -427,11 +468,11 @@ function drawBooks() {
   const admin = S.tab === '수서';
   $('bookResults').innerHTML = S.books.length ? '<div class="books">' + S.books.map((b, i) => {
     const pending = b.holding.state === '확인 중';
-    const blocked = pending || (!admin && (b.blocked || (b.holding.state === '소장' && S.user?.group !== '교원') || !isOpen()));
-    return `<article class="book">${b.cover?`<img class="cover" src="${esc(b.cover)}" alt="도서 표지" loading="lazy" referrerpolicy="no-referrer">`:'<div class="cover"></div>'}<div class="bookmain"><h3>${esc(b.title)}</h3><p>${esc(b.author)}<br>${esc(b.publisher)} · ${money(b.price)}<br>ISBN ${esc(b.id)}</p><p>${tag(b.holding.state,b.holding.state==='소장'?'no':b.holding.state==='확인 불가'?'hold':'')} ${b.blocked?tag('현재 차수 보류','no'):''}</p>${b.link?`<p><a href="${esc(b.link)}" target="_blank" rel="noopener noreferrer">${esc(b.source)} 도서정보 ↗</a></p>`:''}${b.recommendation?'<details><summary>외부 추천 사유</summary><p>'+esc(b.recommendation)+'</p></details>':''}<button data-book="${i}" ${blocked?'disabled':''}>${pending?'소장 확인 중…':admin?'수서 후보 담기':b.blocked?'보류 도서':b.holding.state==='소장'?'수업용 신청':'신청하기'}</button></div></article>`;
+    const blocked = (!admin && pending) || (!admin && (b.blocked || (b.holding.state === '소장' && S.user?.group !== '교원') || !isOpen()));
+    return `<article class="book">${b.cover?`<img class="cover" src="${esc(b.cover)}" alt="도서 표지" loading="lazy" referrerpolicy="no-referrer">`:'<div class="cover"></div>'}<div class="bookmain"><h3>${esc(b.title)}</h3><p>${esc(b.author)}<br>${esc(b.publisher)} · ${money(b.price)}<br>ISBN ${esc(b.id)}</p><p>${tag(b.holding.state,b.holding.state==='소장'?'no':b.holding.state==='확인 불가'?'hold':'')} ${b.blocked?tag('현재 차수 보류','no'):''}</p>${b.link?`<p><a href="${esc(b.link)}" target="_blank" rel="noopener noreferrer">${esc(b.source)} 도서정보 ↗</a></p>`:''}${b.recommendation?'<details><summary>외부 추천 사유</summary><p>'+esc(b.recommendation)+'</p></details>':''}<button data-book="${i}" ${blocked?'disabled':''}>${pending&&!admin?'소장 확인 중…':admin?'수서 후보 담기':b.blocked?'보류 도서':b.holding.state==='소장'?'수업용 신청':'신청하기'}</button></div></article>`;
   }).join('') + '</div>' : '<div class="card empty">검색 결과가 없습니다.</div>';
   $('bookResults').querySelectorAll('[data-book]').forEach(b => b.onclick = () => bookModal(S.books[Number(b.dataset.book)]));
-  $('searchPager').innerHTML = `<button class="light" id="prevSearch" ${S.searchPage===1?'disabled':''}>이전</button><span>${S.searchPage}페이지</span><button class="light" id="nextSearch" ${S.searchPage*20>=S.total?'disabled':''}>다음</button>`;
+  $('searchPager').innerHTML = `<button id="prevSearch" ${S.searchPage===1?'disabled':''}>이전</button><span>${S.searchPage}페이지</span><button id="nextSearch" ${S.searchPage*(S.searchSize||5)>=S.total?'disabled':''}>다음</button>`;
   $('prevSearch').onclick = () => {
     S.searchPage--;
     run(doSearch);
@@ -443,19 +484,23 @@ function drawBooks() {
 }
 
 async function checkSearchHoldings(seq, roundId, admin) {
-  const ids = [...new Set(S.books.map(b => b.id))];
-  let done = 0;
+  const total = new Set(S.books.map(b => b.id)).size;
+  const ids = [...new Set(S.books.filter(b => b.holding.state === '확인 중' || (admin && !Number(b.price))).map(b => b.id))];
+  let done = total - ids.length;
   if (!ids.length) {
-    $('holdingProgress').textContent = '';
+    $('holdingProgress').textContent = S.books.length ? '소장 확인 완료 · 최근 확인 결과 재사용' : '';
     return;
   }
-  $('holdingProgress').textContent = `소장 확인 ${done}/${ids.length}종 · 결과를 먼저 보여드리고 있습니다.`;
+  $('holdingProgress').textContent = `소장 확인 ${done}/${total}종 · 결과를 먼저 보여드리고 있습니다.`;
   for (let i = 0; i < ids.length; i += 10) {
     if (seq !== S.searchSeq || $('round').value !== roundId) return;
     try {
       const d = await api('holdings', {
         isbns: ids.slice(i, i + 10),
-        books: S.books.filter(b=>ids.slice(i,i+10).includes(b.id)).map(b=>({id:b.id,bookToken:b.bookToken})),
+        books: S.books.filter(b => ids.slice(i, i + 10).includes(b.id)).map(b => ({
+          id: b.id,
+          bookToken: b.bookToken
+        })),
         admin
       });
       if (seq !== S.searchSeq || $('round').value !== roundId) return;
@@ -477,7 +522,7 @@ async function checkSearchHoldings(seq, roundId, admin) {
     }
     done += Math.min(10, ids.length - i);
     drawBooks();
-    $('holdingProgress').textContent = `소장 확인 ${done}/${ids.length}종${done===ids.length?' · 완료':''}`;
+    $('holdingProgress').textContent = `소장 확인 ${done}/${total}종${done===total?' · 완료':''}`;
   }
 }
 
@@ -554,7 +599,7 @@ function drawList() {
     pages = Math.max(1, Math.ceil(all.length / S.size));
   S.page = Math.min(S.page, pages);
   const list = all.slice((S.page - 1) * S.size, S.page * S.size);
-  $('content').innerHTML = `<section class="card"><h2>도서 선정</h2><div class="row toolbar"><select id="statusFilter" aria-label="상태">${['전체','신청','선정','보류'].map(x=>`<option ${x===S.filter?'selected':''}>${x}</option>`).join('')}</select><select id="groupFilter" aria-label="신청자 구분">${['전체','학생','교원','직원','학부모','수서'].map(x=>`<option ${x===S.groupFilter?'selected':''}>${x}</option>`).join('')}</select><select id="sort" aria-label="정렬"><option value="new" ${S.sort==='new'?'selected':''}>최근 신청순</option><option value="title" ${S.sort==='title'?'selected':''}>도서명순</option></select><input id="filterQ" value="${esc(S.q)}" placeholder="도서명·신청자·ISBN"><button id="applyFilter" class="light">찾기</button><select id="size" aria-label="페이지 표시 개수">${[20,50,100].map(x=>`<option ${S.size===x?'selected':''}>${x}</option>`).join('')}</select></div><div class="row toolbar"><button class="light" id="pageSelect">현재 페이지 선택</button><button class="light" id="allSelect">검색 결과 전체 선택</button><button class="light" id="clearSelect">선택 해제</button><span id="selectedCount">${S.selected.size}건 선택</span></div><div class="row toolbar"><button data-status="선정">선정</button><button class="yellow" data-status="보류">보류</button><button class="light" data-status="신청">신청으로 되돌리기</button><button class="light" id="listCheck">선택 도서 소장 재확인</button></div><div class="tablewrap"><table><thead><tr><th>선택</th><th>도서명 / ISBN</th><th>신청자</th><th>정가 / 90%</th><th>부수</th><th>이유</th><th>상태 / 소장</th><th>관리</th></tr></thead><tbody>${list.map(x=>`<tr><td><input type="checkbox" data-select="${esc(x.id)}" ${S.selected.has(x.id)?'checked':''} aria-label="${esc(x.title)} 선택"></td><td class="title">${esc(x.title)} ${x.duplicate?tag('중복 신청','hold'):''}<small>${esc(x.author)} · ${esc(x.publisher)}<br>${esc(x.isbn)}</small></td><td>${esc(x.group)} ${esc(x.name)}<small>${esc(x.number||x.subject||'')} ${esc(x.purpose)}<br>${time(x.created)}</small></td><td>${money(x.price)}<small>${money(Math.round(x.price*.9))}</small></td><td>${x.qty}</td><td>${esc(x.reason)}${x.selectionReason?'<small>선정: '+esc(x.selectionReason)+'</small>':''}</td><td>${tag(x.status,x.status==='보류'?'hold':'')}<small>${esc(x.holding)}</small>${x.notice?'<small>'+esc(x.notice)+'</small>':''}</td><td><button class="light" data-edit="${esc(x.id)}">편집</button>${x.status==='보류'?'<button class="light" data-unblock="'+esc(x.isbn)+'">차단 해제</button>':''}</td></tr>`).join('')}</tbody></table></div><div class="row toolbar"><button class="light" id="prev" ${S.page===1?'disabled':''}>이전</button><span>${S.page}/${pages}페이지 · ${all.length}건</span><button class="light" id="next" ${S.page===pages?'disabled':''}>다음</button><button class="light" id="refresh">새로고침</button></div></section>`;
+  $('content').innerHTML = `<section class="card"><h2>도서 선정</h2><div class="row toolbar"><select id="statusFilter" aria-label="상태">${['전체','신청','선정','보류'].map(x=>`<option ${x===S.filter?'selected':''}>${x}</option>`).join('')}</select><select id="groupFilter" aria-label="신청자 구분">${['전체','학생','교원','직원','학부모','수서'].map(x=>`<option ${x===S.groupFilter?'selected':''}>${x}</option>`).join('')}</select><select id="sort" aria-label="정렬"><option value="new" ${S.sort==='new'?'selected':''}>최근 신청순</option><option value="title" ${S.sort==='title'?'selected':''}>도서명순</option></select><input id="filterQ" value="${esc(S.q)}" placeholder="도서명·신청자·ISBN"><button id="applyFilter" class="light">찾기</button><select id="size" aria-label="페이지 표시 개수">${[20,50,100].map(x=>`<option ${S.size===x?'selected':''}>${x}</option>`).join('')}</select></div><div class="row toolbar"><button class="light" id="pageSelect">현재 페이지 선택</button><button class="light" id="allSelect">검색 결과 전체 선택</button><button class="light" id="clearSelect">선택 해제</button><span id="selectedCount">${S.selected.size}건 선택</span></div><div class="row toolbar"><button data-status="선정">선정</button><button class="yellow" data-status="보류">보류</button><button class="light" data-status="신청">신청으로 되돌리기</button><button class="light" id="listCheck">선택 도서 소장 재확인</button></div><div class="tablewrap"><table><thead><tr><th>선택</th><th>도서명 / ISBN</th><th>신청자</th><th>정가 / 90%</th><th>부수</th><th>이유</th><th>상태 / 소장</th><th>관리</th></tr></thead><tbody>${list.map(x=>`<tr><td><input type="checkbox" data-select="${esc(x.id)}" ${S.selected.has(x.id)?'checked':''} aria-label="${esc(x.title)} 선택"></td><td class="title">${esc(x.title)} ${x.duplicate?tag('중복 신청','hold'):''}<small>${esc(x.author)} · ${esc(x.publisher)}<br>${esc(x.isbn)}</small></td><td>${esc(x.group)} ${esc(x.name)}<small>${esc(x.number||x.subject||'')} ${esc(x.purpose)}<br>${time(x.created)}</small></td><td>${money(x.price)}<small>${money(Math.round(x.price*.9))}</small></td><td>${x.qty}</td><td>${esc(x.reason)}${x.selectionReason?'<small>선정: '+esc(x.selectionReason)+'</small>':''}</td><td>${tag(x.status,x.status==='보류'?'hold':'')}<small>${esc(x.holding)}</small>${x.notice?'<small>'+esc(x.notice)+'</small>':''}</td><td><button class="light" data-edit="${esc(x.id)}">편집</button>${x.status==='보류'?'<button class="light" data-unblock="'+esc(x.isbn)+'">차단 해제</button>':''}</td></tr>`).join('')}</tbody></table></div><div class="row toolbar pagination"><button id="prev" ${S.page===1?'disabled':''}>이전</button><span>${S.page}/${pages}페이지 · ${all.length}건</span><button id="next" ${S.page===pages?'disabled':''}>다음</button><button class="light" id="refresh">새로고침</button></div></section>`;
   const updateCount = () => $('selectedCount').textContent = S.selected.size + '건 선택';
   $('statusFilter').onchange = e => {
     S.filter = e.target.value;
@@ -818,16 +863,18 @@ function download(a, txt) {
 }
 async function settings() {
   const d = await api('settings');
-  $('content').innerHTML = `<section class="card"><h2>학교 설정</h2><label>독서로 학교 검색 링크</label><input id="schoolLink" value="${esc(d.school.link)}"><div class="two"><div><label>학교급</label><select id="schoolLevel">${['초등학교','중학교','고등학교'].map(v=>`<option ${v===d.profile.level?'selected':''}>${v}</option>`).join('')}</select></div><div><label>학생 구성</label><select id="schoolGender">${['남학생 중심','여학생 중심','전체'].map(v=>`<option ${v===d.profile.gender?'selected':''}>${v}</option>`).join('')}</select></div></div><button id="profileSave" class="light">추천 기본조건 저장</button><p class="muted">학교 변경 시 이전 기록은 보존되고 학교별로 구분됩니다. 새 학교는 새로운 차수를 설정하세요.</p><div class="row"><button class="light" id="schoolProbe">연결 확인</button><button id="schoolSave">학교 정보 저장</button></div><p id="probeResult" class="muted"></p></section><section class="card"><h2>접수 차수·기간</h2><label>기존 차수 선택 / 신규</label><select id="roundEdit"><option value="">새 차수</option>${d.rounds.map(r=>`<option value="${esc(r.id)}">${r.year}학년도 ${r.number}차</option>`).join('')}</select><div class="two"><div><label>학년도</label><input type="number" id="year" min="2000" max="2100" value="${new Date().getFullYear()}"></div><div><label>차수</label><input type="number" id="roundNumber" min="1" max="99" value="1"></div><div><label>시작일</label><input type="date" id="start"></div><div><label>종료일</label><input type="date" id="end"></div></div><label class="row"><input type="checkbox" id="enabled" checked>접수 허용</label><p class="muted">종료일 한국 시간 23:59:59까지 접수합니다. 같은 학년도·차수를 저장하면 기간과 접수 허용 설정을 수정합니다.</p><button id="roundSave">차수·기간 저장</button></section>${apiCards(d.keys)}`;
+  $('content').innerHTML = `<section class="card"><h2>학교 설정</h2><label>독서로 학교 검색 링크</label><input id="schoolLink" value="${esc(d.school.link)}"><div class="two"><div><label>학교급</label><select id="schoolLevel">${['초등학교','중학교','고등학교'].map(v=>`<option ${v===d.profile.level?'selected':''}>${v}</option>`).join('')}</select></div><div><label>학생 구성</label><select id="schoolGender">${['남학생 중심','여학생 중심','전체'].map(v=>`<option ${v===d.profile.gender?'selected':''}>${v}</option>`).join('')}</select></div></div><div class="two"><div><label>하단 이모티콘</label><input id="footerIcon" maxlength="20" value="${esc(d.profile.footerIcon||'📚')}"></div><div><label>하단 표시 문구 · 빈칸이면 학교명 자동 사용</label><input id="footerText" maxlength="120" value="${esc(d.profile.footerText||'')}" placeholder="학교명 도서관 도서 신청"></div></div><button id="profileSave" class="light">추천·화면 설정 저장</button><p class="muted">학교 변경 시 이전 기록은 보존되고 학교별로 구분됩니다. 새 학교는 새로운 차수를 설정하세요.</p><div class="row"><button class="light" id="schoolProbe">연결 확인</button><button id="schoolSave">학교 정보 저장</button></div><p id="probeResult" class="muted"></p></section><section class="card"><h2>접수 차수·기간</h2><label>기존 차수 선택 / 신규</label><select id="roundEdit"><option value="">새 차수</option>${d.rounds.map(r=>`<option value="${esc(r.id)}">${r.year}학년도 ${r.number}차</option>`).join('')}</select><div class="two"><div><label>학년도</label><input type="number" id="year" min="2000" max="2100" value="${new Date().getFullYear()}"></div><div><label>차수</label><input type="number" id="roundNumber" min="1" max="99" value="1"></div><div><label>시작일</label><input type="date" id="start"></div><div><label>종료일</label><input type="date" id="end"></div></div><label class="row"><input type="checkbox" id="enabled" checked>접수 허용</label><p class="muted">종료일 한국 시간 23:59:59까지 접수합니다. 같은 학년도·차수를 저장하면 기간과 접수 허용 설정을 수정합니다.</p><button id="roundSave">차수·기간 저장</button></section>${apiCards(d.keys)}`;
   bindApiSettings(d.keys);
   let verified = '';
   $('profileSave').onclick = () => run(async () => {
     await api('saveProfile', {
       level: $('schoolLevel').value,
-      gender: $('schoolGender').value
+      gender: $('schoolGender').value,
+      footerIcon: $('footerIcon').value,
+      footerText: $('footerText').value
     });
     await init();
-    toast('학교 추천 기본조건을 저장했습니다.');
+    toast('추천·화면 설정을 저장했습니다.');
   });
   $('schoolLink').oninput = () => verified = '';
   $('schoolProbe').onclick = () => run(async () => {
